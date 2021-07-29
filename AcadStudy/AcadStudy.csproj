@@ -57,7 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcadSingleton.cs" />
+    <Compile Include="AcadConn.cs" />
+    <Compile Include="AcadMethod.cs" />
+    <Compile Include="DrawingStudy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
