@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="AcadConn.cs" />
     <Compile Include="AcadMethod.cs" />
+    <Compile Include="CodeFromVBA.cs" />
     <Compile Include="DrawingStudy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

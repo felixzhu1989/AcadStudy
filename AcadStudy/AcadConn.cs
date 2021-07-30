@@ -7,6 +7,9 @@ using Autodesk.AutoCAD.Interop;
 
 namespace AcadStudy
 {
+    /// <summary>
+    /// 参考：https://blog.csdn.net/shengshaohua/article/details/8363769
+    /// </summary>
     public class AcadConn : IDisposable
     {
         private static AcadApplication acadApp;
@@ -19,7 +22,7 @@ namespace AcadStudy
             {
                 // Upon creation, attempt to retrieve running instance
                 acadApp = (AcadApplication)Marshal.GetActiveObject("AutoCAD.Application");
-                acadApp.Documents.Add("");
+                //acadApp.Documents.Add("");//添加一个新的drawing
             }
             catch
             {

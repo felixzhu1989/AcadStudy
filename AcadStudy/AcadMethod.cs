@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.Interop.Common;
 namespace AcadStudy
 {
     /// <summary>
-    /// https://blog.csdn.net/shengshaohua/article/details/8363769
+    /// 参考：https://blog.csdn.net/shengshaohua/article/details/8363769
     /// </summary>
     public class AcadMethod
     {
