@@ -11,11 +11,11 @@ namespace AcadStudy
 
             //new Program().AcadMethodDemo();
 
-            StudyPoint studyPoint=new StudyPoint();
-            //studyPoint.P1_4();
-            //studyPoint.P5();
-            //studyPoint.P6();
-            studyPoint.P7();
+            Chapter chapter = new Chapter();
+            //chapter.P1_4();
+            //chapter.P5();
+            //chapter.P6();
+            chapter.P7();
 
 
 

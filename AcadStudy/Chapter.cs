@@ -4,7 +4,7 @@ namespace AcadStudy
 {
     //BiliBili视频：https://www.bilibili.com/video/BV1Hb411T7sA
     //------测试代码---------------------
-    public class StudyPoint
+    public class Chapter
     {
         private AcadHelper Acad = new AcadHelper();
         /// <summary>
