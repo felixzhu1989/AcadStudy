@@ -8,13 +8,13 @@ using Autodesk.AutoCAD.Interop.Common;
 namespace AcadStudy
 {
     
-    public class DrawingStudy
+    public class AcadTest
     {
         private AcadApplication acadApp = AcadConn.GetAcadApplication();
         private AcadDocument acadDoc;
-        private AcadModelSpace moSpace;
+        private AcadModelSpace modelSpace;
 
-        public DrawingStudy()
+        public AcadTest()
         {
             if (acadApp != null)
             {
@@ -26,7 +26,7 @@ namespace AcadStudy
                 return;
             }
             acadDoc = acadApp.ActiveDocument;
-            moSpace = acadDoc.ModelSpace;
+            modelSpace = acadDoc.ModelSpace;
         }
 
 
@@ -34,14 +34,14 @@ namespace AcadStudy
         {
             double[] startPoint = { 1, 1, 0 };
             double[] endPoint = { 5, 5, 0 };
-            AcadLine line = moSpace.AddLine(startPoint, endPoint);
+            AcadLine line = modelSpace.AddLine(startPoint, endPoint);
             Console.WriteLine(line.EntityName);
-            acadApp.ZoomExtents();
-            if (moSpace.Count != 0)
+            if (modelSpace.Count != 0)
             {
-                AcadEntity acadEntity = moSpace.Item(0);
+                AcadEntity acadEntity = modelSpace.Item(0);
                 Console.WriteLine(acadEntity.GetType());
             }
+            acadApp.ZoomExtents();
         }
 
         public void CreateSpline()
@@ -50,7 +50,7 @@ namespace AcadStudy
             double[] startTan = { 0.5, 0.5, 0 };
             double[] endTan = { 0.5, 0.5, 0 };
 
-            AcadSpline spline = moSpace.AddSpline(fitPoint, startTan, endTan);
+            AcadSpline spline = modelSpace.AddSpline(fitPoint, startTan, endTan);
             Console.WriteLine(spline.EntityName);
             acadApp.ZoomExtents();
         }

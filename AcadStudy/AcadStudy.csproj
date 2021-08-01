@@ -60,7 +60,7 @@
     <Compile Include="AcadConn.cs" />
     <Compile Include="AcadMethod.cs" />
     <Compile Include="AcadHelper.cs" />
-    <Compile Include="DrawingStudy.cs" />
+    <Compile Include="AcadTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Chapter.cs" />

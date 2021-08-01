@@ -9,16 +9,16 @@ namespace AcadStudy
         {
             Console.WriteLine("Connecting...");
 
-            //new Program().AcadMethodDemo();
+            //new Program().AcadMethodTest();
 
             Chapter chapter = new Chapter();
-            //chapter.P1_4();
+            //chapter.P1to4();
             //chapter.P5();
             //chapter.P6();
-            chapter.P7();
-
-
-
+            //chapter.P7();
+            //chapter.P8_1();
+            //chapter.P8_2();
+            chapter.P9to11();
 
 
 
@@ -35,7 +35,7 @@ namespace AcadStudy
         /// <summary>
         /// AcadMethod测试代码
         /// </summary>
-        private void AcadMethodDemo()
+        private void AcadMethodTest()
         {
             AcadMethod method = new AcadMethod();
             method.DrawLineLeft(0, 0, 0, 600, true);

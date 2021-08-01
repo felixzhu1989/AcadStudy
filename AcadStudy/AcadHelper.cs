@@ -7,14 +7,15 @@ namespace AcadStudy
     /*《ActiveX 和 VBA 参考》由明经通道翻译并提供：https://blog.csdn.net/weixin_46656590/article/details/105247189 
     下载地址：https://yunpan.360.cn/surl_yRE3CKKEqLk （提取码：c16e）
     BiliBili视频：https://www.bilibili.com/video/BV1Hb411T7sA
+    代码由VBA的逻辑转化而来
     */
 
 
     public class AcadHelper
     {
-        private AcadApplication acadApp = AcadConn.GetAcadApplication();
-        private AcadDocument acadDoc;
-        private AcadModelSpace modelSpace;
+        public AcadApplication acadApp = AcadConn.GetAcadApplication();
+        public AcadDocument acadDoc;
+        public AcadModelSpace modelSpace;
 
         public AcadHelper()
         {
@@ -189,16 +190,234 @@ namespace AcadStudy
         /// <summary>
         /// 通过两点创建圆，两点为圆直径上两点
         /// </summary>
-        /// <param name="firstPoint">第一点</param>
-        /// <param name="secondPoint">第二点</param>
+        /// <param name="point1">第一点</param>
+        /// <param name="point2">第二点</param>
         /// <returns></returns>
-        public AcadCircle AddCircleBy2Point(double[] firstPoint, double[] secondPoint)
+        public AcadCircle AddCircleBy2Point(double[] point1, double[] point2)
         {
-            double[] centerPoint = { (firstPoint[0] + secondPoint[0]) / 2, (firstPoint[1] + secondPoint[1]) / 2, 0 };
-            double radius = Math.Sqrt(Math.Pow(firstPoint[0] - secondPoint[0], 2) + Math.Pow(firstPoint[1] - secondPoint[1], 2))/2;
+            double[] centerPoint = { (point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2, 0 };
+            double radius = Math.Sqrt(Math.Pow(point1[0] - point2[0], 2) + Math.Pow(point1[1] - point2[1], 2))/2;
             AcadCircle circle = modelSpace.AddCircle(centerPoint, radius);
             return circle;
         }
+        /// <summary>
+        /// 通过三点创建圆，几何法
+        /// </summary>
+        /// <param name="point1">点1</param>
+        /// <param name="point2">点2</param>
+        /// <param name="point3">点3</param>
+        /// <returns></returns>
+        public AcadCircle AddCircleBy3Point1(double[] point1, double[] point2, double[] point3)
+        {
+            //如果三点在一条直线上无法创建圆
+            if ((point1[0] - point2[0]) / (point1[1] - point2[1]) ==
+                (point1[0] - point3[0]) / (point1[1] - point3[1]))
+            {
+                Console.WriteLine("三点共线无法创建圆");
+                return null;
+            }
+            else
+            {
+                /*与圆心到三个点的距离相等，
+               点1点2连线的中垂线上的点到它们的距离都相等
+                因此圆心为点1点2和点1点3中垂线交点
+                */
+                //1.求点1点2和点1点3连线的中点
+                double[] point12 = {(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2, 0};
+                double[] point13 = { (point1[0] + point3[0]) / 2, (point1[1] + point3[1]) / 2, 0 };
+                //2.求点1点2和点1点3连线的角度，再+90度为中垂线的角度,(先画连线，再取连线的角度)
+                AcadLine line12 = modelSpace.AddLine(point1, point2);
+                AcadLine line13 = modelSpace.AddLine(point1, point3);
+                double angle12 = line12.Angle+Math.PI/2;
+                double angle13 = line13.Angle + Math.PI / 2;
+                //3.根据中点和角度创建中垂线
+                AcadLine midLine12 = AddLineByReAngle(point12, angle12,100);
+                AcadLine midLine13 = AddLineByReAngle(point13, angle13, 100);
+                //4.求两中垂线交点为圆心(延伸相交)
+               object intersection = midLine12.IntersectWith(midLine13, AcExtendOption.acExtendBoth);
+                double[] centerPoint = (double[])intersection;
+                //5.点到圆心的距离就是半径
+                double radius= Math.Sqrt(Math.Pow(point1[0] - centerPoint[0], 2) + Math.Pow(point1[1] - centerPoint[1], 2));
+                //6.清除辅助线
+                line12.Delete();
+                line13.Delete();
+                midLine12.Delete();
+                midLine13.Delete();
+                //7.创建圆
+                AcadCircle circle = modelSpace.AddCircle(centerPoint, radius);
+                return circle;
+            }
+        }
 
+        /// <summary>
+        /// 通过三点创建圆，计算法
+        /// </summary>
+        /// <param name="point1">点1</param>
+        /// <param name="point2">点2</param>
+        /// <param name="point3">点3</param>
+        /// <returns></returns>
+        public AcadCircle AddCircleBy3Point2(double[] point1, double[] point2, double[] point3)
+        {
+            //参考：https://blog.csdn.net/liyuanbhu/article/details/52891868
+
+            //如果三点在一条直线上无法创建圆，（斜率相等）
+            if ((point1[0] - point2[0]) / (point1[1] - point2[1]) ==
+                (point1[0] - point3[0]) / (point1[1] - point3[1]))
+            {
+                Console.WriteLine("三点共线无法创建圆");
+                return null;
+            }
+            else
+            {
+                double x1 = point1[0], x2 = point2[0], x3 = point3[0];
+                double y1 = point1[1], y2 = point2[1], y3 = point3[1];
+                double a = x1 - x2;
+                double b = y1 - y2;
+                double c = x1 - x3;
+                double d = y1 - y3;
+                double e = ((x1 * x1 - x2 * x2) + (y1 * y1 - y2 * y2)) / 2.0;
+                double f = ((x1 * x1 - x3 * x3) + (y1 * y1 - y3 * y3)) / 2.0;
+                double det = b * c - a * d;
+                if (Math.Abs(det) < 1e-5)
+                {
+                    Console.WriteLine("计算错误，无法创建圆");
+                    return null;
+                }
+                double[] centerPoint = { -(d * e - b * f) / det, -(a * f - c * e) / det, 0 };
+                double radius = Math.Sqrt(Math.Pow(point1[0] - centerPoint[0], 2) + Math.Pow(point1[1] - centerPoint[1], 2));
+                AcadCircle circle = modelSpace.AddCircle(centerPoint, radius);
+                return circle;
+            }
+        }
+        /// <summary>
+        /// 绘制圆弧Demo
+        /// </summary>
+        /// <returns></returns>
+        public AcadArc AddArcDemo()
+        {
+            double[] centerPoint = {0, 0, 0};
+            double radius = 50;
+            double startAngle = Math.PI/4;
+            double endAngle = 10*Math.PI/4;//如果终止数字大于2PI，则cad会计算终止点位置，然后逆时针方向连接起来
+            //默认角度都都是以弧度计算,起始到终止为逆时针方向
+            AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+            return arc;
+        }
+        /// <summary>
+        /// 通过圆心，半径，起始角度和终止角度绘制圆弧
+        /// </summary>
+        /// <param name="centerPoint">圆心</param>
+        /// <param name="radius">半径</param>
+        /// <param name="startAngle">起始角度</param>
+        /// <param name="endAngle">终止角度</param>
+        /// <returns></returns>
+        public AcadArc AddArcByParams(double[] centerPoint, double radius, double startAngle, double endAngle)
+        {
+            AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+            return arc;
+        }
+        /// <summary>
+        /// 通过圆心，起点和端点绘制圆弧
+        /// </summary>
+        /// <param name="centerPoint">圆心</param>
+        /// <param name="startPoint">起点</param>
+        /// <param name=""></param>
+        /// <param name="endPoint">端点</param>
+        /// <returns></returns>
+        public AcadArc AddArcByStartToEndPoint(double[] centerPoint, double[] startPoint, double[] endPoint)
+        {
+            double radius = Math.Sqrt(Math.Pow(centerPoint[0]-startPoint[0],2)+Math.Pow(centerPoint[1] - startPoint[1],2));
+            double startAngle = acadDoc.Utility.AngleFromXAxis(centerPoint,startPoint);//点到点连线相对于X轴的角度（逆时针）
+            double endAngle = acadDoc.Utility.AngleFromXAxis(centerPoint, endPoint);
+
+            AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+            return arc;
+        }
+        /// <summary>
+        /// 通过圆心，起点和角度绘制圆弧
+        /// </summary>
+        /// <param name="centerPoint">圆心</param>
+        /// <param name="startPoint">起点</param>
+        /// <param name="angle">角度</param>
+        /// <returns></returns>
+        public AcadArc AddArcByStartAndAngle(double[] centerPoint, double[] startPoint, double angle)
+        {
+            double radius = Math.Sqrt(Math.Pow(centerPoint[0] - startPoint[0], 2) + Math.Pow(centerPoint[1] - startPoint[1], 2));
+            double startAngle = acadDoc.Utility.AngleFromXAxis(centerPoint, startPoint);
+            double endAngle = startAngle + angle * Math.PI / 180;//换算成弧度
+            AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+            return arc;
+        }
+        /// <summary>
+        /// 通过圆心，起点和弦长绘制圆弧
+        /// </summary>
+        /// <param name="centerPoint">圆心</param>
+        /// <param name="startPoint">起点</param>
+        /// <param name="chordLength">弦长</param>
+        /// <returns></returns>
+        public AcadArc AddArcByStartAndChordLength(double[] centerPoint, double[] startPoint, double chordLength)
+        {
+            double radius = Math.Sqrt(Math.Pow(centerPoint[0] - startPoint[0], 2) + Math.Pow(centerPoint[1] - startPoint[1], 2));
+            double startAngle = acadDoc.Utility.AngleFromXAxis(centerPoint, startPoint);
+            double endAngle = startAngle+2*Math.Asin((chordLength/2)/radius);//反正弦
+            AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+            return arc;
+        }
+
+        /// <summary>
+        /// 通过圆心，起点和弧长绘制圆弧
+        /// </summary>
+        /// <param name="centerPoint">圆心</param>
+        /// <param name="startPoint">起点</param>
+        /// <param name="arcLength">弧长</param>
+        /// <returns></returns>
+        public AcadArc AddArcByStartAndArcLength(double[] centerPoint, double[] startPoint, double arcLength)
+        {
+            double radius = Math.Sqrt(Math.Pow(centerPoint[0] - startPoint[0], 2) + Math.Pow(centerPoint[1] - startPoint[1], 2));
+            double startAngle = acadDoc.Utility.AngleFromXAxis(centerPoint, startPoint);
+            double endAngle = startAngle + arcLength/radius;
+            AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+            return arc;
+        }
+
+        /// <summary>
+        /// 通过三点绘制圆弧
+        /// </summary>
+        /// <param name="point1">点1</param>
+        /// <param name="point2">点2</param>
+        /// <param name="point3">点3</param>
+        /// <returns></returns>
+        public AcadArc AddArcBy3Point(double[] point1, double[] point2, double[] point3)
+        {
+            //如果三点在一条直线上无法创建圆弧
+            if ((point1[0] - point2[0]) / (point1[1] - point2[1]) ==
+                (point1[0] - point3[0]) / (point1[1] - point3[1]))
+            {
+                Console.WriteLine("三点共线无法创建圆弧");
+                return null;
+            }
+            else
+            {
+                double[] point12 = {(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2, 0};
+                double[] point13 = {(point1[0] + point3[0]) / 2, (point1[1] + point3[1]) / 2, 0};
+                double angle12 = acadDoc.Utility.AngleFromXAxis(point1, point2) + Math.PI / 2;
+                double angle13 = acadDoc.Utility.AngleFromXAxis(point1, point3) + Math.PI / 2;
+                //根据中点和角度创建中垂线
+                AcadLine midLine12 = AddLineByReAngle(point12, angle12, 100);
+                AcadLine midLine13 = AddLineByReAngle(point13, angle13, 100);
+                //求两中垂线交点为圆心(延伸相交)
+                object intersection = midLine12.IntersectWith(midLine13, AcExtendOption.acExtendBoth);
+                double[] centerPoint = (double[]) intersection;
+                //点到圆心的距离就是半径
+                double radius =
+                    Math.Sqrt(Math.Pow(point1[0] - centerPoint[0], 2) + Math.Pow(point1[1] - centerPoint[1], 2));
+                midLine12.Delete();
+                midLine13.Delete();
+                double startAngle = acadDoc.Utility.AngleFromXAxis(centerPoint, point1);
+                double endAngle = acadDoc.Utility.AngleFromXAxis(centerPoint, point3);
+                AcadArc arc = modelSpace.AddArc(centerPoint, radius, startAngle, endAngle);
+                return arc;
+            }
+        }
     }
 }
