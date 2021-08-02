@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetARX</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetARX.EntTools">
+            <summary>
+            工具类
+            </summary>
+        </member>
+        <member name="M:DotNetARX.EntTools.AddToModelSpace(Autodesk.AutoCAD.DatabaseServices.Database,Autodesk.AutoCAD.DatabaseServices.Entity)">
+            <summary>
+            将实体添加到模型空间(扩展方法)
+            </summary>
+            <param name="db">数据库对象</param>
+            <param name="ent">要添加的实体</param>
+            <returns>返回添加到模型空间中的实体</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,5 @@
+D:\AutoCadDemo\AutoCADStudy\InitAndOpt\obj\Debug\InitAndOpt.csproj.CoreCompileInputs.cache
+D:\AutoCadDemo\AutoCADStudy\InitAndOpt\bin\Debug\InitAndOpt.dll
+D:\AutoCadDemo\AutoCADStudy\InitAndOpt\bin\Debug\InitAndOpt.pdb
+D:\AutoCadDemo\AutoCADStudy\InitAndOpt\obj\Debug\InitAndOpt.dll
+D:\AutoCadDemo\AutoCADStudy\InitAndOpt\obj\Debug\InitAndOpt.pdb

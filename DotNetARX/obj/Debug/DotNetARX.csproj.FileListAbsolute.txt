@@ -1,0 +1,6 @@
+D:\AutoCadDemo\AutoCADStudy\DotNetARX\bin\Debug\DotNetARX.xml
+D:\AutoCadDemo\AutoCADStudy\DotNetARX\bin\Debug\DotNetARX.dll
+D:\AutoCadDemo\AutoCADStudy\DotNetARX\bin\Debug\DotNetARX.pdb
+D:\AutoCadDemo\AutoCADStudy\DotNetARX\obj\Debug\DotNetARX.csproj.CoreCompileInputs.cache
+D:\AutoCadDemo\AutoCADStudy\DotNetARX\obj\Debug\DotNetARX.dll
+D:\AutoCadDemo\AutoCADStudy\DotNetARX\obj\Debug\DotNetARX.pdb
