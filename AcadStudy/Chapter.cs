@@ -96,9 +96,9 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第9-11节课，创建圆弧
+        /// 第9-10节课，创建圆弧
         /// </summary>
-        public void P9to11()
+        public void P9to10()
         {
             double[] centerPoint = { 10, 0, 0 };
             double[] startPoint = { 50, 50, 0 };
@@ -111,9 +111,26 @@ namespace AcadStudy
             Acad.AddArcBy3Point(startPoint, endPoint,centerPoint);//注意三点的顺序为逆时针方向
             Acad.Zoom();
         }
+        /// <summary>
+        /// 第11-12节课，创建举行和多边形
+        /// </summary>
+        public void P11to12()
+        {
+            double[] point1 = { 10, 10, 0 };
+            double[] point2 = { 30, 20, 0 };
+            Acad.AddRectangleBy2Point(point1, point2);
+            Acad.AddPolygonInside(point1, point2, 5);
+            Acad.AddPolygonOutside(point1, point2, 5);
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第13节课，创建椭圆
+        /// </summary>
+        public void P13()
+        {
 
-
-
+            Acad.Zoom();
+        }
 
     }
 }
