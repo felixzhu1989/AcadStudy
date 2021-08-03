@@ -452,7 +452,7 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadLWPolyline AddRectangleBy2Point(double[] point1, double[] point2)
         {
-            
+
             //两两构成一个点,这里有三点
             double[] points = { point1[0], point1[1], point2[0], point1[1], point2[0], point2[1], point1[0], point2[1] };
             //绘制轻量多段线
@@ -469,14 +469,14 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadLWPolyline AddPolygonInside(double[] centerPoint, double[] vertexPoint, int sideNum)
         {
-            double radius =Math.Sqrt(Math.Pow(vertexPoint[0] - centerPoint[0], 2) + Math.Pow(vertexPoint[1] - centerPoint[1], 2)) ;//外接圆半径
+            double radius = Math.Sqrt(Math.Pow(vertexPoint[0] - centerPoint[0], 2) + Math.Pow(vertexPoint[1] - centerPoint[1], 2));//外接圆半径
             double angleFromX = acadDoc.Utility.AngleFromXAxis(centerPoint, vertexPoint);//顶点角度
             //多边形等分角度
             double angleDivision = 2 * Math.PI / sideNum;
-            double[] points=new double[2 * sideNum];
-            for (int i = 0; i < 2*sideNum; i=i+2)
+            double[] points = new double[2 * sideNum];
+            for (int i = 0; i < 2 * sideNum; i = i + 2)
             {
-                points[i] =centerPoint[0]+Math.Cos(angleFromX) *radius;
+                points[i] = centerPoint[0] + Math.Cos(angleFromX) * radius;
                 points[i + 1] = centerPoint[1] + Math.Sin(angleFromX) * radius;
                 angleFromX = angleFromX + angleDivision;
             }
@@ -513,9 +513,107 @@ namespace AcadStudy
             polygon.Closed = true; //闭合
             return polygon;
         }
-
-
-
+        /// <summary>
+        /// 绘制椭圆Demo
+        /// </summary>
+        /// <returns></returns>
+        public AcadEllipse AddEllipseDemo()
+        {
+            double[] centerPoint = { 10, 10, 0 };
+            double[] majorAxis = { 20, 0, 0 };//相对于中心点的坐标
+            double radiusRatio = 0.5;//短轴与长轴的比值,必须小于或等于1
+            if (radiusRatio>1) radiusRatio = 1;
+            AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
+            return ellipse;
+        }
+        /// <summary>
+        /// 通过中心点，长轴顶点和短轴长轴比绘制椭圆
+        /// </summary>
+        /// <param name="centerPoint">中心点</param>
+        /// <param name="majorAxis">长轴顶点</param>
+        /// <param name="radiusRatio">短轴长轴比</param>
+        /// <returns></returns>
+        public AcadEllipse AddEllipseByAxisAndRatio(double[] centerPoint, double[] majorAxis, double radiusRatio)
+        {
+            majorAxis[0] = majorAxis[0] - centerPoint[0];//相对于中心点的坐标
+            majorAxis[1] = majorAxis[1] - centerPoint[1];
+            if (radiusRatio > 1) radiusRatio = 1;
+            AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
+            return ellipse;
+        }
+        /// <summary>
+        /// 通过中心点，长轴顶点和短轴顶点绘制椭圆
+        /// </summary>
+        /// <param name="centerPoint">中心点</param>
+        /// <param name="majorAxis">长轴顶点</param>
+        /// <param name="vertexPoint">短轴顶点</param>
+        /// <returns></returns>
+        public AcadEllipse AddEllipseBy3Point(double[] centerPoint, double[] majorAxis, double[] vertexPoint)
+        {
+            majorAxis[0] = majorAxis[0] - centerPoint[0];
+            majorAxis[1] = majorAxis[1] - centerPoint[1];
+            vertexPoint[0] = vertexPoint[0] - centerPoint[0];
+            vertexPoint[1] = vertexPoint[1] - centerPoint[1];
+            double radiusLong = Math.Sqrt(Math.Pow(vertexPoint[0],2) + Math.Pow(vertexPoint[1],2));
+            double radiusShort = Math.Sqrt(Math.Pow(vertexPoint[0],2) + Math.Pow(vertexPoint[1],2));
+            double radiusRatio = radiusShort/radiusLong;//短轴与长轴的比值
+            if (radiusRatio > 1) radiusRatio = radiusLong/ radiusShort;//反过来
+            AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
+            return ellipse;
+        }
+        /// <summary>
+        /// 绘制填充Demo
+        /// </summary>
+        /// <returns></returns>
+        public AcadHatch AddHatchDemo()
+        {
+            //首先创建一个封闭区域，比如矩形
+            double[] point1 = {10, 10, 0};
+            double[] point2 = {30, 20, 0};
+            AcadLWPolyline objRectangle= AddRectangleBy2Point(point1, point2);
+            object[] objArray = { objRectangle };
+            string patternName = "ANSI33";
+            AcadHatch hatch = modelSpace.AddHatch(0,patternName,true);
+            hatch.AppendInnerLoop(objArray);//对象数组
+            hatch.PatternScale = 10;
+            hatch.PatternAngle = 45;
+            hatch.color = ACAD_COLOR.acRed;
+            return hatch;
+        }
+        /// <summary>
+        /// 通过对象数组和填充样式名称绘制填充
+        /// </summary>
+        /// <param name="objArray">对象数组</param>
+        /// <param name="patternName">填充样式名称</param>
+        /// <returns></returns>
+        public AcadHatch AddHatchByName(object[] objArray, string patternName)
+        {
+            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true);
+            hatch.AppendInnerLoop(objArray);//对象数组
+            return hatch;
+        }
+        /// <summary>
+        /// 绘制渐变填充Demo
+        /// </summary>
+        /// <returns></returns>
+        public AcadHatch AddGradientHatchDemo()
+        {
+            double[] point1 = { 30, 30, 0 };
+            double[] point2 = { 50, 40, 0 };
+            AcadLWPolyline objRectangle = AddRectangleBy2Point(point1, point2);
+            object[] objArray = { objRectangle };
+            string patternName = "LINEAR";
+            AcadAcCmColor acColor1 = (AcadAcCmColor)acadDoc.Application.GetInterfaceObject("AutoCAD.AcCmColor.17");
+            AcadAcCmColor acColor2 = (AcadAcCmColor)acadDoc.Application.GetInterfaceObject("AutoCAD.AcCmColor.17");
+            acColor1.ColorIndex = (AcColor)1;
+            acColor2.ColorIndex = (AcColor)2;
+            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true,1);//最后一个为渐变选项
+            hatch.GradientColor1 = acColor1;
+            hatch.GradientColor2 = acColor2;
+            hatch.AppendInnerLoop(objArray);//对象数组
+            hatch.Evaluate();
+            return hatch;
+        }
 
 
 

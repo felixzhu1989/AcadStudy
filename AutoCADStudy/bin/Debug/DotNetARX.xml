@@ -6,7 +6,7 @@
     <members>
         <member name="T:DotNetARX.EntTools">
             <summary>
-            工具类
+            实体操作类
             </summary>
         </member>
         <member name="M:DotNetARX.EntTools.AddToModelSpace(Autodesk.AutoCAD.DatabaseServices.Database,Autodesk.AutoCAD.DatabaseServices.Entity)">
@@ -16,6 +16,150 @@
             <param name="db">数据库对象</param>
             <param name="ent">要添加的实体</param>
             <returns>返回添加到模型空间中的实体</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.AddToModelSpace(Autodesk.AutoCAD.DatabaseServices.Database,Autodesk.AutoCAD.DatabaseServices.Entity[])">
+            <summary>
+            将实体集合添加到模型空间(扩展方法),偏移时用到的addtomodelspace
+            </summary>
+            <param name="db">数据库对象</param>
+            <param name="ents">要添加的实体集合</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Move(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d)">
+            <summary>
+            移动实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="sourcePt">移动的源点</param>
+            <param name="targetPt">移动的目标点</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.Move(Autodesk.AutoCAD.DatabaseServices.Entity,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d)">
+            <summary>
+            移动实体
+            </summary>
+            <param name="ent">实体</param>
+            <param name="sourcePt">移动的源点</param>
+            <param name="targetPt">移动的目标点</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.Copy(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d)">
+            <summary>
+            复制实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="sourcePt">复制的源点</param>
+            <param name="targetPt">复制的目标点</param>
+            <returns>返回复制实体的ObjectId</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Copy(Autodesk.AutoCAD.DatabaseServices.Entity,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d)">
+            <summary>
+            复制实体
+            </summary>
+            <param name="ent">实体</param>
+            <param name="sourcePt">复制的源点</param>
+            <param name="targetPt">复制的目标点</param>
+            <returns>返回复制实体的ObjectId</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Rotate(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.Geometry.Point3d,System.Double)">
+            <summary>
+            旋转实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="basePt">旋转基点</param>
+            <param name="angle">旋转角度</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.Rotate(Autodesk.AutoCAD.DatabaseServices.Entity,Autodesk.AutoCAD.Geometry.Point3d,System.Double)">
+            <summary>
+            旋转实体
+            </summary>
+            <param name="ent">实体</param>
+            <param name="basePt">旋转基点</param>
+            <param name="angle">旋转角度</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.Scale(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.Geometry.Point3d,System.Double)">
+            <summary>
+            缩放实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="basePt">缩放基点</param>
+            <param name="scaleFactor">缩放比例</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.Scale(Autodesk.AutoCAD.DatabaseServices.Entity,Autodesk.AutoCAD.Geometry.Point3d,System.Double)">
+            <summary>
+            缩放实体
+            </summary>
+            <param name="ent">实体</param>
+            <param name="basePt">缩放基点</param>
+            <param name="scaleFactor">缩放比例</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.Mirror(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d,System.Boolean)">
+            <summary>
+            镜像实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="mirrorPt1">镜像轴的第一点</param>
+            <param name="mirrorPt2">镜像轴的第二点</param>
+            <param name="eraseSourceObject">是否删除源对象</param>
+            <returns>返回镜像实体的ObjectId</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Mirror(Autodesk.AutoCAD.DatabaseServices.Entity,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d,System.Boolean)">
+            <summary>
+            镜像实体
+            </summary>
+            <param name="ent">实体</param>
+            <param name="mirrorPt1">镜像轴的第一点</param>
+            <param name="mirrorPt2">镜像轴的第二点</param>
+            <param name="eraseSourceObject">是否删除源对象</param>
+            <returns>返回镜像实体的ObjectId</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Offset(Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Double)">
+            <summary>
+            偏移实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="dis">偏移距离</param>
+            <returns>返回偏移后的实体Id集合</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Offset(Autodesk.AutoCAD.DatabaseServices.Entity,System.Double)">
+            <summary>
+            偏移实体
+            </summary>
+            <param name="ent">实体</param>
+            <param name="dis">偏移距离</param>
+            <returns>返回偏移后的实体集合</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.ArrayRectang(Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+            矩形阵列实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="numRows">矩形阵列的行数,该值必须为正数</param>
+            <param name="numCols">矩形阵列的列数,该值必须为正数</param>
+            <param name="disRows">行间的距离</param>
+            <param name="disCols">列间的距离</param>
+            <returns>返回阵列后的实体集合的ObjectId</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.ArrayPolar(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.Geometry.Point3d,System.Int32,System.Double)">
+            <summary>
+            环形阵列实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+            <param name="cenPt">环形阵列的中心点</param>
+            <param name="numObj">在环形阵列中所要创建的对象数量</param>
+            <param name="angle">以弧度表示的填充角度，正值表示逆时针方向旋转，负值表示顺时针方向旋转，如果角度为0则出错</param>
+            <returns>返回阵列后的实体集合的ObjectId</returns>
+        </member>
+        <member name="M:DotNetARX.EntTools.Erase(Autodesk.AutoCAD.DatabaseServices.ObjectId)">
+            <summary>
+            删除实体
+            </summary>
+            <param name="id">实体的ObjectId</param>
+        </member>
+        <member name="M:DotNetARX.EntTools.GetAllEntsExtent(Autodesk.AutoCAD.DatabaseServices.Database)">
+            <summary>
+            计算图形数据库模型空间中所有实体的包围框
+            </summary>
+            <param name="db">数据库对象</param>
+            <returns>返回模型空间中所有实体的包围框</returns>
         </member>
     </members>
 </doc>

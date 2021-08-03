@@ -4,3 +4,10 @@ D:\AutoCadDemo\AutoCADStudy\DotNetARX\bin\Debug\DotNetARX.pdb
 D:\AutoCadDemo\AutoCADStudy\DotNetARX\obj\Debug\DotNetARX.csproj.CoreCompileInputs.cache
 D:\AutoCadDemo\AutoCADStudy\DotNetARX\obj\Debug\DotNetARX.dll
 D:\AutoCadDemo\AutoCADStudy\DotNetARX\obj\Debug\DotNetARX.pdb
+E:\AcadStudy\DotNetARX\obj\Debug\DotNetARX.csproj.CoreCompileInputs.cache
+E:\AcadStudy\DotNetARX\obj\Debug\DotNetARX.dll
+E:\AcadStudy\DotNetARX\obj\Debug\DotNetARX.pdb
+E:\AcadStudy\DotNetARX\bin\Debug\DotNetARX.xml
+E:\AcadStudy\DotNetARX\bin\Debug\DotNetARX.dll
+E:\AcadStudy\DotNetARX\bin\Debug\DotNetARX.pdb
+E:\AcadStudy\DotNetARX\obj\Debug\DotNetARX.csprojAssemblyReference.cache

@@ -128,9 +128,22 @@ namespace AcadStudy
         /// </summary>
         public void P13()
         {
-
+            double[] point1 = { 0, 0, 0 };
+            double[] point2 = { 20, 0, 0 };
+            double[] point3 = { 10, 0, 0 };
+            Acad.AddEllipseDemo();
+            Acad.AddEllipseByAxisAndRatio(point3, point2, 0.7);
+            Acad.AddEllipseBy3Point(point1, point2, point3);
             Acad.Zoom();
         }
-
+        /// <summary>
+        /// 第14-15节课,创建填充
+        /// </summary>
+        public void P14toP15()
+        {
+            Acad.AddHatchDemo();
+            Acad.AddGradientHatchDemo();
+            Acad.Zoom();
+        }
     }
 }

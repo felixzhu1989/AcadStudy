@@ -8,3 +8,13 @@ D:\AutoCadDemo\AutoCADStudy\AutoCADStudy\bin\Debug\DotNetARX.pdb
 D:\AutoCadDemo\AutoCADStudy\AutoCADStudy\bin\Debug\DotNetARX.xml
 D:\AutoCadDemo\AutoCADStudy\AutoCADStudy\obj\Debug\AutoCADStudy.csprojAssemblyReference.cache
 D:\AutoCadDemo\AutoCADStudy\AutoCADStudy\obj\Debug\AutoCADStudy.csproj.CopyComplete
+E:\AcadStudy\AutoCADStudy\obj\Debug\AutoCADStudy.csprojAssemblyReference.cache
+E:\AcadStudy\AutoCADStudy\obj\Debug\AutoCADStudy.csproj.CoreCompileInputs.cache
+E:\AcadStudy\AutoCADStudy\obj\Debug\AutoCADStudy.dll
+E:\AcadStudy\AutoCADStudy\obj\Debug\AutoCADStudy.pdb
+E:\AcadStudy\AutoCADStudy\bin\Debug\AutoCADStudy.dll
+E:\AcadStudy\AutoCADStudy\bin\Debug\AutoCADStudy.pdb
+E:\AcadStudy\AutoCADStudy\bin\Debug\DotNetARX.dll
+E:\AcadStudy\AutoCADStudy\bin\Debug\DotNetARX.pdb
+E:\AcadStudy\AutoCADStudy\bin\Debug\DotNetARX.xml
+E:\AcadStudy\AutoCADStudy\obj\Debug\AutoCADStudy.csproj.CopyComplete
