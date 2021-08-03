@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 using System;
+using Autodesk.AutoCAD.Geometry;
 
 namespace AcadStudy
 {
@@ -44,6 +45,8 @@ namespace AcadStudy
             AcadEntity objAcadEntity = (AcadEntity)objEntity;
             Console.WriteLine(objAcadEntity.EntityName);
         }
+
+        #region 绘制图元
 
         /// <summary>
         /// 绘制直线Demo
@@ -522,7 +525,7 @@ namespace AcadStudy
             double[] centerPoint = { 10, 10, 0 };
             double[] majorAxis = { 20, 0, 0 };//相对于中心点的坐标
             double radiusRatio = 0.5;//短轴与长轴的比值,必须小于或等于1
-            if (radiusRatio>1) radiusRatio = 1;
+            if (radiusRatio > 1) radiusRatio = 1;
             AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
             return ellipse;
         }
@@ -554,10 +557,10 @@ namespace AcadStudy
             majorAxis[1] = majorAxis[1] - centerPoint[1];
             vertexPoint[0] = vertexPoint[0] - centerPoint[0];
             vertexPoint[1] = vertexPoint[1] - centerPoint[1];
-            double radiusLong = Math.Sqrt(Math.Pow(vertexPoint[0],2) + Math.Pow(vertexPoint[1],2));
-            double radiusShort = Math.Sqrt(Math.Pow(vertexPoint[0],2) + Math.Pow(vertexPoint[1],2));
-            double radiusRatio = radiusShort/radiusLong;//短轴与长轴的比值
-            if (radiusRatio > 1) radiusRatio = radiusLong/ radiusShort;//反过来
+            double radiusLong = Math.Sqrt(Math.Pow(vertexPoint[0], 2) + Math.Pow(vertexPoint[1], 2));
+            double radiusShort = Math.Sqrt(Math.Pow(vertexPoint[0], 2) + Math.Pow(vertexPoint[1], 2));
+            double radiusRatio = radiusShort / radiusLong;//短轴与长轴的比值
+            if (radiusRatio > 1) radiusRatio = radiusLong / radiusShort;//反过来
             AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
             return ellipse;
         }
@@ -568,12 +571,12 @@ namespace AcadStudy
         public AcadHatch AddHatchDemo()
         {
             //首先创建一个封闭区域，比如矩形
-            double[] point1 = {10, 10, 0};
-            double[] point2 = {30, 20, 0};
-            AcadLWPolyline objRectangle= AddRectangleBy2Point(point1, point2);
+            double[] point1 = { 10, 10, 0 };
+            double[] point2 = { 30, 20, 0 };
+            AcadLWPolyline objRectangle = AddRectangleBy2Point(point1, point2);
             object[] objArray = { objRectangle };
             string patternName = "ANSI33";
-            AcadHatch hatch = modelSpace.AddHatch(0,patternName,true);
+            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true);
             hatch.AppendInnerLoop(objArray);//对象数组
             hatch.PatternScale = 10;
             hatch.PatternAngle = 45;
@@ -607,13 +610,64 @@ namespace AcadStudy
             AcadAcCmColor acColor2 = (AcadAcCmColor)acadDoc.Application.GetInterfaceObject("AutoCAD.AcCmColor.17");
             acColor1.ColorIndex = (AcColor)1;
             acColor2.ColorIndex = (AcColor)2;
-            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true,1);//最后一个为渐变选项
+            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true, 1);//最后一个为渐变选项
             hatch.GradientColor1 = acColor1;
             hatch.GradientColor2 = acColor2;
             hatch.AppendInnerLoop(objArray);//对象数组
             hatch.Evaluate();
             return hatch;
         }
+        /// <summary>
+        /// 通过插入点和字高绘制单行文字
+        /// </summary>
+        /// <param name="textString">内容</param>
+        /// <param name="insertPoint">插入点</param>
+        /// <param name="height">字高</param>
+        /// <returns></returns>
+        public AcadText AddText(string textString, double[] insertPoint, double height)
+        {
+            AcadText text = modelSpace.AddText(textString, insertPoint, height);
+            return text;
+        }
+        /// <summary>
+        /// 通过插入点和宽度绘制多行文字
+        /// </summary>
+        /// <param name="insertPoint">插入点</param>
+        /// <param name="width">宽度</param>
+        /// <param name="textString">内容</param>
+        /// <returns></returns>
+        public AcadMText AddMText(double[] insertPoint, double width, string textString)
+        {
+            //默认字高从系统变量中获取
+            AcadMText mText = modelSpace.AddMText(insertPoint, width, textString);
+            return mText;
+        }
+
+        #endregion 绘制图元
+
+        #region 图元属性
+        /// <summary>
+        /// 修改圆属性
+        /// </summary>
+        public void ChangeCircleDemo()
+        {
+            object objEntity;
+            object pickedPoint;
+            //让用户选取对象
+            acadDoc.Utility.GetEntity(out objEntity,out pickedPoint, "请选择圆：");
+            AcadEntity entity = (AcadEntity)objEntity;
+            if (string.Compare(entity.EntityName,"AcDbCircle")==0)
+            {
+                entity.color = ACAD_COLOR.acBlue;
+            }
+        }
+
+
+
+
+
+        #endregion 图元属性
+
 
 
 

@@ -1,4 +1,5 @@
-﻿using Autodesk.AutoCAD.Interop.Common;
+﻿using System;
+using Autodesk.AutoCAD.Interop.Common;
 
 namespace AcadStudy
 {
@@ -8,7 +9,7 @@ namespace AcadStudy
     {
         private AcadHelper Acad = new AcadHelper();
         /// <summary>
-        /// 第1-4节课,创建直线
+        /// 第1-4课,创建直线
         /// </summary>
         public void P1to4()
         {
@@ -25,7 +26,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第5节课，创建多段线
+        /// 第5课，创建多段线
         /// </summary>
         public void P5()
         {
@@ -34,7 +35,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第6节课，创建圆
+        /// 第6课，创建圆
         /// </summary>
         public void P6()
         {
@@ -50,7 +51,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第7节课，通过三点创建圆
+        /// 第7课，通过三点创建圆
         /// </summary>
         public void P7()
         {
@@ -64,7 +65,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第8节课，使用循环方法创建同心圆
+        /// 第8课，使用循环方法创建同心圆
         /// </summary>
         public void P8_1()
         {
@@ -78,7 +79,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第8节课，使用循环方法创建阵列
+        /// 第8课，使用循环方法创建阵列
         /// </summary>
         public void P8_2()
         {
@@ -96,7 +97,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第9-10节课，创建圆弧
+        /// 第9-10课，创建圆弧
         /// </summary>
         public void P9to10()
         {
@@ -112,7 +113,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第11-12节课，创建举行和多边形
+        /// 第11-12课，创建举行和多边形
         /// </summary>
         public void P11to12()
         {
@@ -124,7 +125,7 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第13节课，创建椭圆
+        /// 第13课，创建椭圆
         /// </summary>
         public void P13()
         {
@@ -137,13 +138,42 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第14-15节课,创建填充
+        /// 第14-15课,创建填充
         /// </summary>
         public void P14toP15()
         {
             Acad.AddHatchDemo();
             Acad.AddGradientHatchDemo();
+            Acad.acadDoc.Regen(AcRegenType.acActiveViewport);
             Acad.Zoom();
+        }
+        /// <summary>
+        /// 第16课,创建文字
+        /// </summary>
+        public void P16()
+        {
+            double[] insertPoint = { 10, 10, 0 };
+            string textString = "AutoCAD C# 二次开发";
+            double height = 10;
+            AcadText text= Acad.AddText(textString, insertPoint, height);
+            text.Rotation = 30 * Math.PI / 180;//旋转
+            text.Height = 5;
+            text.Backward = true;//水平翻转
+            text.UpsideDown = true;//上下翻转
+            text.Alignment = AcAlignment.acAlignmentCenter;//对齐方式
+            double[] insertPoint2 = { 10, -10, 0 };
+            double width = 60;
+            AcadMText mText = Acad.AddMText(insertPoint2, width, textString);
+            mText.Height = 6;//后期修改字高
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第17课,图元属性
+        /// </summary>
+        public void P17()
+        {
+
+
         }
     }
 }
