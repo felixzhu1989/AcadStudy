@@ -8,6 +8,9 @@ namespace AcadStudy
     public class Chapter
     {
         private AcadHelper Acad = new AcadHelper();
+
+        #region 创建图元
+        
         /// <summary>
         /// 第1-4课,创建直线
         /// </summary>
@@ -132,9 +135,10 @@ namespace AcadStudy
             double[] point1 = { 0, 0, 0 };
             double[] point2 = { 20, 0, 0 };
             double[] point3 = { 10, 0, 0 };
+            double[] point4 = {30, 0, 0};
             Acad.AddEllipseDemo();
             Acad.AddEllipseByAxisAndRatio(point3, point2, 0.7);
-            Acad.AddEllipseBy3Point(point1, point2, point3);
+            Acad.AddEllipseBy3Point(point1, point4, point3);
             Acad.Zoom();
         }
         /// <summary>
@@ -144,7 +148,6 @@ namespace AcadStudy
         {
             Acad.AddHatchDemo();
             Acad.AddGradientHatchDemo();
-            Acad.acadDoc.Regen(AcRegenType.acActiveViewport);
             Acad.Zoom();
         }
         /// <summary>
@@ -167,13 +170,37 @@ namespace AcadStudy
             mText.Height = 6;//后期修改字高
             Acad.Zoom();
         }
+        #endregion 创建图元 
+
+        #region 图元属性
+
         /// <summary>
-        /// 第17课,图元属性
+        /// 第17-18课,图元属性
         /// </summary>
-        public void P17()
+        public void P17to18()
         {
-
-
+            //Acad.ShowEntity();
+            Acad.ChangeCircleDemo();
+            Acad.ChangeTextDemo();
+            Acad.Zoom();
         }
+
+        /// <summary>
+        /// 第19课,根据现有图元创建其他图元
+        /// </summary>
+        public void P19()
+        {
+            
+
+
+            Acad.Zoom();
+        }
+
+
+
+
+
+        #endregion 图元属性
+
     }
 }

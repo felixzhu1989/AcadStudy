@@ -20,15 +20,14 @@ namespace AcadStudy
             //chapter.P8_2();
             //chapter.P9to10();
             //chapter.P11to12();
-            chapter.P13();
+            //chapter.P13();
+            //chapter.P14toP15();
+            //chapter.P16();
+            chapter.P17to18();
+            //chapter.P19();
 
 
-
-
-
-
-
-            Console.WriteLine("Drawing work done！\n------------------");
+            Console.WriteLine("Drawing completed, please close the window！\n------------------------------------------");
             Console.ReadKey();
         }
 

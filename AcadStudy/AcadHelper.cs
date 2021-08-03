@@ -1,7 +1,6 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 using System;
-using Autodesk.AutoCAD.Geometry;
 
 namespace AcadStudy
 {
@@ -39,11 +38,24 @@ namespace AcadStudy
         /// </summary>
         public void ShowEntity()
         {
+
             Object objEntity;
             Object pointPicked;
-            acadDoc.Utility.GetEntity(out objEntity, out pointPicked, "请选择图元：");
-            AcadEntity objAcadEntity = (AcadEntity)objEntity;
-            Console.WriteLine(objAcadEntity.EntityName);
+            AcadEntity objAcadEntity;
+            do
+            {
+                try
+                {
+                    acadDoc.Utility.GetEntity(out objEntity, out pointPicked, "请选择图元：");
+                    objAcadEntity = (AcadEntity)objEntity;
+                    Console.WriteLine(objAcadEntity.EntityName);
+                }
+                catch (Exception e)
+                {
+                    //选择空白，则退出
+                    return;
+                }
+            } while (true);
         }
 
         #region 绘制图元
@@ -557,7 +569,7 @@ namespace AcadStudy
             majorAxis[1] = majorAxis[1] - centerPoint[1];
             vertexPoint[0] = vertexPoint[0] - centerPoint[0];
             vertexPoint[1] = vertexPoint[1] - centerPoint[1];
-            double radiusLong = Math.Sqrt(Math.Pow(vertexPoint[0], 2) + Math.Pow(vertexPoint[1], 2));
+            double radiusLong = Math.Sqrt(Math.Pow(majorAxis[0], 2) + Math.Pow(majorAxis[1], 2));
             double radiusShort = Math.Sqrt(Math.Pow(vertexPoint[0], 2) + Math.Pow(vertexPoint[1], 2));
             double radiusRatio = radiusShort / radiusLong;//短轴与长轴的比值
             if (radiusRatio > 1) radiusRatio = radiusLong / radiusShort;//反过来
@@ -570,29 +582,36 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadHatch AddHatchDemo()
         {
-            //首先创建一个封闭区域，比如矩形
-            double[] point1 = { 10, 10, 0 };
-            double[] point2 = { 30, 20, 0 };
-            AcadLWPolyline objRectangle = AddRectangleBy2Point(point1, point2);
-            object[] objArray = { objRectangle };
+            //首先创建一个封闭区域，PolyLine
+            double[] points = { 10, 10, 0, 30, 10, 0, 30, 20, 0, 10, 20, 0 };
+            AcadPolyline objPolyline = modelSpace.AddPolyline(points);
+            objPolyline.Closed = true;
+            AcadEntity[] entArray = new AcadEntity[1];
+            entArray[0] = (AcadEntity)objPolyline;
             string patternName = "ANSI33";
             AcadHatch hatch = modelSpace.AddHatch(0, patternName, true);
-            hatch.AppendInnerLoop(objArray);//对象数组
-            hatch.PatternScale = 10;
-            hatch.PatternAngle = 45;
-            hatch.color = ACAD_COLOR.acRed;
+            hatch.AppendInnerLoop(entArray);
+            //边界对象数组，边界必须包含以下类型的对象： Line, Polyline, Circle, Ellipse, Spline, Region 
+            hatch.PatternScale = 0.25;
+            hatch.PatternAngle = 90 * Math.PI / 180;//以弧度计算的
+            hatch.color = ACAD_COLOR.acGreen;
+            //当为图案填充定义定了边界后，使用 Evaluate 方法计算填充线并填充该边界，然后使用 Regen 方法更新该图案填充的显示。
+            hatch.Evaluate();
+            acadDoc.Regen(AcRegenType.acActiveViewport);
             return hatch;
         }
         /// <summary>
         /// 通过对象数组和填充样式名称绘制填充
         /// </summary>
-        /// <param name="objArray">对象数组</param>
+        /// <param name="entArray">对象数组</param>
         /// <param name="patternName">填充样式名称</param>
         /// <returns></returns>
-        public AcadHatch AddHatchByName(object[] objArray, string patternName)
+        public AcadHatch AddHatchByName(AcadEntity[] entArray, string patternName)
         {
             AcadHatch hatch = modelSpace.AddHatch(0, patternName, true);
-            hatch.AppendInnerLoop(objArray);//对象数组
+            hatch.AppendInnerLoop(entArray);//对象数组
+            hatch.Evaluate();
+            acadDoc.Regen(AcRegenType.acActiveViewport);
             return hatch;
         }
         /// <summary>
@@ -601,10 +620,11 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadHatch AddGradientHatchDemo()
         {
-            double[] point1 = { 30, 30, 0 };
-            double[] point2 = { 50, 40, 0 };
-            AcadLWPolyline objRectangle = AddRectangleBy2Point(point1, point2);
-            object[] objArray = { objRectangle };
+            double[] points = { 30, 10, 0, 50, 10, 0, 50, 20, 0, 30, 20, 0 };
+            AcadPolyline objPolyline = modelSpace.AddPolyline(points);
+            objPolyline.Closed = true;
+            AcadEntity[] entArray = new AcadEntity[1];
+            entArray[0] = (AcadEntity)objPolyline;
             string patternName = "LINEAR";
             AcadAcCmColor acColor1 = (AcadAcCmColor)acadDoc.Application.GetInterfaceObject("AutoCAD.AcCmColor.17");
             AcadAcCmColor acColor2 = (AcadAcCmColor)acadDoc.Application.GetInterfaceObject("AutoCAD.AcCmColor.17");
@@ -613,8 +633,9 @@ namespace AcadStudy
             AcadHatch hatch = modelSpace.AddHatch(0, patternName, true, 1);//最后一个为渐变选项
             hatch.GradientColor1 = acColor1;
             hatch.GradientColor2 = acColor2;
-            hatch.AppendInnerLoop(objArray);//对象数组
+            hatch.AppendInnerLoop(entArray);//对象数组
             hatch.Evaluate();
+            acadDoc.Regen(AcRegenType.acActiveViewport);
             return hatch;
         }
         /// <summary>
@@ -653,13 +674,60 @@ namespace AcadStudy
         {
             object objEntity;
             object pickedPoint;
-            //让用户选取对象
-            acadDoc.Utility.GetEntity(out objEntity,out pickedPoint, "请选择圆：");
-            AcadEntity entity = (AcadEntity)objEntity;
-            if (string.Compare(entity.EntityName,"AcDbCircle")==0)
+            AcadEntity entity;
+            Boolean flag = true;
+            do
             {
-                entity.color = ACAD_COLOR.acBlue;
-            }
+                //防止用户非法选择导致程序崩溃
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要修改的圆：");
+                    entity = (AcadEntity)objEntity;
+                    if (string.Compare(entity.EntityName, "AcDbCircle") == 0)
+                    {
+                        entity.color = ACAD_COLOR.acBlue;
+                        acadDoc.Utility.Prompt("圆修改完成。");
+                        flag = false;
+                    }
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+            } while (flag);
+        }
+        /// <summary>
+        /// 修改文字
+        /// </summary>
+        public void ChangeTextDemo()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要修改的文字：");
+                    entity = (AcadEntity)objEntity;
+                    //单行文本AcDbText；多行文本为AcDbMText
+                    if (entity.EntityName == "AcDbText")
+                    {
+                        string str = acadDoc.Utility.GetString(0, "请输入新内容");
+                        AcadText text = (AcadText)entity;
+                        text.TextString = str;
+                        acadDoc.Utility.Prompt("文字修改完成。");
+                        flag = false;
+                    }
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+            } while (flag);
         }
 
 

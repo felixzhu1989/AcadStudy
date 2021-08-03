@@ -37,3 +37,16 @@ E:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.CopyComplete
 E:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.exe
 E:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.pdb
 E:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csprojAssemblyReference.cache
+D:\AcadStudy\AcadStudy\bin\Debug\AcadStudy.exe
+D:\AcadStudy\AcadStudy\bin\Debug\AcadStudy.pdb
+D:\AcadStudy\AcadStudy\bin\Debug\AcCui.dll
+D:\AcadStudy\AcadStudy\bin\Debug\acdbmgd.dll
+D:\AcadStudy\AcadStudy\bin\Debug\acmgd.dll
+D:\AcadStudy\AcadStudy\bin\Debug\Autodesk.AutoCAD.Interop.Common.dll
+D:\AcadStudy\AcadStudy\bin\Debug\Autodesk.AutoCAD.Interop.dll
+D:\AcadStudy\AcadStudy\bin\Debug\stdole.dll
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csprojAssemblyReference.cache
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.CoreCompileInputs.cache
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.CopyComplete
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.exe
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.pdb
