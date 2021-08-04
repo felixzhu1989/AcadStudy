@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 using System;
+using System.Data;
 
 namespace AcadStudy
 {
@@ -52,8 +53,8 @@ namespace AcadStudy
                 }
                 catch (Exception e)
                 {
-                    //选择空白，则退出
-                    return;
+                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
+                    if (check == "c" || check == "C") return;
                 }
             } while (true);
         }
@@ -688,12 +689,16 @@ namespace AcadStudy
                     {
                         entity.color = ACAD_COLOR.acBlue;
                         acadDoc.Utility.Prompt("圆修改完成。");
-                        flag = false;
                     }
                 }
                 catch (Exception)
                 {
                     acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
+                    if (check == "c" || check == "C") flag = false;
                 }
             } while (flag);
         }
@@ -720,14 +725,162 @@ namespace AcadStudy
                         AcadText text = (AcadText)entity;
                         text.TextString = str;
                         acadDoc.Utility.Prompt("文字修改完成。");
-                        flag = false;
                     }
                 }
                 catch (Exception)
                 {
                     acadDoc.Utility.Prompt("未选中实体，");
                 }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
+                    if (check == "c" || check == "C") flag = false;
+                }
             } while (flag);
+        }
+        /// <summary>
+        /// 给现有文字添加边框
+        /// </summary>
+        public void AddBoundingBoxOnText()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要添加边框的文字：");
+                    entity = (AcadEntity) objEntity;
+                    //单行文本AcDbText；多行文本为AcDbMText
+                    if (entity.EntityName == "AcDbText")
+                    {
+                        AcadText text = (AcadText) entity;
+                        object objMinPoint;
+                        object objMaxPoint;
+                        text.GetBoundingBox(out objMinPoint, out objMaxPoint);
+                        AddRectangleBy2Point((double[]) objMinPoint, (double[]) objMaxPoint);
+                        acadDoc.Utility.Prompt("边框添加完成完成。");
+                    }
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
+                    if (check == "c" || check == "C") flag = false;
+                }
+            } while (flag);
+        }
+        /// <summary>
+        /// 通过圆心和半径绘制内接五角星
+        /// </summary>
+        /// <param name="centerPoint"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public AcadLWPolyline AddStarInCircle(double[] centerPoint, double radius)
+        {
+            double angleFromX = Math.PI / 2;//起点在Y轴上
+            double angleDivision = 2 * Math.PI / 5;//五角星
+            double[] points = new double[10];
+            for (int i = 0; i < 10; i = i + 2)
+            {
+                points[i] = centerPoint[0] + Math.Cos(angleFromX) * radius;
+                points[i + 1] = centerPoint[1] + Math.Sin(angleFromX) * radius;
+                angleFromX = angleFromX + angleDivision * 2;//跨两个等分角（因为是绘制五角星）
+            }
+            //绘制轻量多段线
+            AcadLWPolyline star = modelSpace.AddLightWeightPolyline(points);
+            star.Closed = true; //闭合
+            return star;
+        }
+        /// <summary>
+        /// 通过选择一个现有圆绘制内接五角星
+        /// </summary>
+        public void AddStarInCircleDemo()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要绘制五角星的圆：");
+                    entity = (AcadEntity)objEntity;
+                    if (entity.EntityName == "AcDbCircle")
+                    {
+                        AcadCircle circle = (AcadCircle)entity;
+                       AcadLWPolyline star= AddStarInCircle((double[])circle.Center, circle.Radius);
+                        star.color = ACAD_COLOR.acGreen;
+                    }
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
+                    if (check == "c" || check == "C") flag = false;
+                }
+            } while (flag);
+        }
+        /// <summary>
+        /// 创建选择集
+        /// </summary>
+        /// <param name="selSetName">选择集名称</param>
+        /// <returns></returns>
+        public AcadSelectionSet CreateSelectionSet(string selSetName)
+        {
+            AcadSelectionSet selectionSet;
+            //如果存在就先删除
+            //方法一
+            //try
+            //{
+            //    acadDoc.SelectionSets.Item(selSetName).Delete();
+            //}
+            //catch (Exception)
+            //{
+            //    Console.WriteLine(selSetName+" not exist");
+            //}
+            //finally
+            //{
+            //    //创建选择集
+            //    selectionSet = acadDoc.SelectionSets.Add(selSetName);
+            //}
+            //方法二
+            for (int i = 0; i < acadDoc.SelectionSets.Count; i++)
+            {
+                selectionSet = acadDoc.SelectionSets.Item(i);
+                if (string.Compare(selectionSet.Name,selSetName)==0)
+                {
+                    selectionSet.Delete();
+                    break;
+                }
+            }
+            selectionSet = acadDoc.SelectionSets.Add(selSetName);
+            return selectionSet;
+        }
+        /// <summary>
+        /// 选择集选择全部图元改颜色Demo
+        /// </summary>
+        public void SelectionSetDemo()
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("SelectionSet");
+            selSet.Select(AcSelect.acSelectionSetAll);//添加全部图元
+            AcadEntity entity;
+            foreach (var item in selSet)
+            {
+                entity = (AcadEntity)item;
+                entity.color = ACAD_COLOR.acMagenta;
+            }
         }
 
 

@@ -186,18 +186,37 @@ namespace AcadStudy
         }
 
         /// <summary>
-        /// 第19课,根据现有图元创建其他图元
+        /// 第19课,根据现有图元创建其他图元，给文字添加边框
         /// </summary>
         public void P19()
         {
-            
-
-
+            Acad.AddBoundingBoxOnText();
             Acad.Zoom();
         }
-
-
-
+        /// <summary>
+        /// 第20课，选择单个圆添加内接五角星
+        /// </summary>
+        public void P20()
+        {
+            Acad.AddStarInCircleDemo();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第21课，选择集
+        /// </summary>
+        public void P21()
+        {
+            Acad.SelectionSetDemo();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第22课，选择多个圆（选择集）添加内接五角星
+        /// </summary>
+        public void P22()
+        {
+            
+            Acad.Zoom();
+        }
 
 
         #endregion 图元属性
