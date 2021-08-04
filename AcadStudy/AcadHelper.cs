@@ -1,7 +1,7 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 using System;
-using System.Data;
+using Autodesk.AutoCAD.GraphicsInterface;
 
 namespace AcadStudy
 {
@@ -51,7 +51,7 @@ namespace AcadStudy
                     objAcadEntity = (AcadEntity)objEntity;
                     Console.WriteLine(objAcadEntity.EntityName);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
                     if (check == "c" || check == "C") return;
@@ -753,15 +753,15 @@ namespace AcadStudy
                 {
                     //让用户选取对象
                     acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要添加边框的文字：");
-                    entity = (AcadEntity) objEntity;
+                    entity = (AcadEntity)objEntity;
                     //单行文本AcDbText；多行文本为AcDbMText
                     if (entity.EntityName == "AcDbText")
                     {
-                        AcadText text = (AcadText) entity;
+                        AcadText text = (AcadText)entity;
                         object objMinPoint;
                         object objMaxPoint;
                         text.GetBoundingBox(out objMinPoint, out objMaxPoint);
-                        AddRectangleBy2Point((double[]) objMinPoint, (double[]) objMaxPoint);
+                        AddRectangleBy2Point((double[])objMinPoint, (double[])objMaxPoint);
                         acadDoc.Utility.Prompt("边框添加完成完成。");
                     }
                 }
@@ -817,7 +817,7 @@ namespace AcadStudy
                     if (entity.EntityName == "AcDbCircle")
                     {
                         AcadCircle circle = (AcadCircle)entity;
-                       AcadLWPolyline star= AddStarInCircle((double[])circle.Center, circle.Radius);
+                        AcadLWPolyline star = AddStarInCircle((double[])circle.Center, circle.Radius);
                         star.color = ACAD_COLOR.acGreen;
                     }
                 }
@@ -842,39 +842,134 @@ namespace AcadStudy
             AcadSelectionSet selectionSet;
             //如果存在就先删除
             //方法一
-            //try
-            //{
-            //    acadDoc.SelectionSets.Item(selSetName).Delete();
-            //}
-            //catch (Exception)
-            //{
-            //    Console.WriteLine(selSetName+" not exist");
-            //}
-            //finally
-            //{
-            //    //创建选择集
-            //    selectionSet = acadDoc.SelectionSets.Add(selSetName);
-            //}
-            //方法二
-            for (int i = 0; i < acadDoc.SelectionSets.Count; i++)
+            try
             {
-                selectionSet = acadDoc.SelectionSets.Item(i);
-                if (string.Compare(selectionSet.Name,selSetName)==0)
-                {
-                    selectionSet.Delete();
-                    break;
-                }
+                acadDoc.SelectionSets.Item(selSetName).Delete();
             }
-            selectionSet = acadDoc.SelectionSets.Add(selSetName);
+            catch (Exception)
+            {
+                Console.WriteLine(selSetName + " not exist");
+            }
+            finally
+            {
+                //创建选择集
+                selectionSet = acadDoc.SelectionSets.Add(selSetName);
+            }
+            //方法二
+            //for (int i = 0; i < acadDoc.SelectionSets.Count; i++)
+            //{
+            //    selectionSet = acadDoc.SelectionSets.Item(i);
+            //    if (string.Compare(selectionSet.Name,selSetName)==0)
+            //    {
+            //        selectionSet.Delete();
+            //        break;
+            //    }
+            //}
+            //selectionSet = acadDoc.SelectionSets.Add(selSetName);
             return selectionSet;
         }
         /// <summary>
-        /// 选择集选择全部图元改颜色Demo
+        /// 选择全部图元作为选择集更改颜色
         /// </summary>
-        public void SelectionSetDemo()
+        public void SelectionSetAllEntity()
         {
-            AcadSelectionSet selSet = CreateSelectionSet("SelectionSet");
-            selSet.Select(AcSelect.acSelectionSetAll);//添加全部图元
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            selSet.Select(AcSelect.acSelectionSetAll);//添加全部图元，后添加的图元先加入selectionSet,堆栈的方式取图元
+            AcadEntity entity;
+            //遍历方法1：注意图元的出栈方式
+            foreach (var item in selSet)
+            {
+                entity = (AcadEntity)item;
+                entity.color = ACAD_COLOR.acMagenta;
+            }
+            //遍历方法2：
+            //for (int i = 0; i < selSet.Count; i++)
+            //{
+            //    entity = selSet.Item(i);
+            //    entity.color = ACAD_COLOR.acMagenta;
+            //}
+        }
+        /// <summary>
+        /// 通过用户选择作为选择集更改颜色
+        /// </summary>
+        public void SelectionSetByUser()
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            //acadDoc.Utility.Prompt("请选择图元：");
+            //double[] point1 = (double[])acadDoc.Utility.GetPoint();
+            //double[] point2 = (double[])acadDoc.Utility.GetCorner(point1, "");
+            //if (point1[0] < point2[0])
+            //{
+            //    selSet.Select(AcSelect.acSelectionSetWindow, point1, point2);
+            //}
+            //else
+            //{
+            //    selSet.Select(AcSelect.acSelectionSetCrossing, point1, point2);
+            //}
+
+            selSet.SelectOnScreen();//按照用户选择的先后顺序添加图元
+            AcadEntity entity;
+            foreach (var item in selSet)
+            {
+                entity = (AcadEntity)item;
+                entity.color = ACAD_COLOR.acGreen;
+            }
+        }
+
+        public void SelectionSetByFilterCircle()
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            //acadDoc.Utility.Prompt("请选择图元：");
+            //double[] point1 = (double[])acadDoc.Utility.GetPoint();
+            //double[] point2 = (double[])acadDoc.Utility.GetCorner(point1, "");
+            //if (point1[0] < point2[0])
+            //{
+            //    selSet.Select(AcSelect.acSelectionSetWindow, point1, point2,filterType, filterData);
+            //}
+            //else
+            //{
+            //    selSet.Select(AcSelect.acSelectionSetCrossing, point1, point2, filterType, filterData);
+            //}
+
+            //还不知道怎么在C#中实现筛选！！！以后有机会补上
+            //API提示指定使用的过滤器类型的 DXF 组码。 
+            //CAD中命令：(setq en_data(entget(car(entsel))))
+            /*选择对象: ((-1 . <图元名: -267bb0>) (0 . "LINE") (330 . <图元名: -269308>) (5 . "1C2") 
+            (100. "AcDbEntity") (67. 0) (410. "Model") (8. "0") (62. 3) (100.
+            "AcDbLine") (10 180.031 92.372 0.0) (11 676.345 - 182.36 0.0) (210 0.0 0.0 1.0))
+            选择对象: ((-1 . <图元名: -267bc0>) (0 . "CIRCLE") (330 . <图元名: -269308>) (5 . "1C0") 
+            (100 . "AcDbEntity") (67 . 0) (410 . "Model") (8 . "0") (62 . 3) (100 . 
+            "AcDbCircle") (10 416.371 721.597 0.0) (40 . 75.6643) (210 0.0 0.0 1.0))
+            */
+            /*VBA示例代码如下：
+            Dim gpCode(0) As Integer
+            Dim dataValue(0) As Variant
+            gpCode(0) = 0
+            dataValue(0) = "Circle"
+
+            Dim groupCode As Variant, dataCode As Variant
+            groupCode = gpCode
+            dataCode = dataValue
+
+            ssetObj.Select mode, corner1, corner2, groupCode, dataCode
+            */
+
+            //int[] gpCode = new int[4];
+            //string[] dataValue = new string[4];
+            //gpCode[0] = -4;
+            //gpCode[1] = 0;//类型
+            //gpCode[2] = 8;//图层
+            //gpCode[3] = -4;
+            //dataValue[0] = "<or";
+            //dataValue[1] = "CIRCLE";
+            //dataValue[2] = "0";
+            //dataValue[3] = "or>";
+
+            //object groupCode = gpCode;
+            //object dataCode = gpCode;
+            //selSet.SelectOnScreen(groupCode, dataCode);
+
+            selSet.SelectOnScreen();
             AcadEntity entity;
             foreach (var item in selSet)
             {
@@ -882,7 +977,6 @@ namespace AcadStudy
                 entity.color = ACAD_COLOR.acMagenta;
             }
         }
-
 
 
 

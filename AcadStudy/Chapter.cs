@@ -190,6 +190,7 @@ namespace AcadStudy
         /// </summary>
         public void P19()
         {
+            //Acad.ShowEntity();
             Acad.AddBoundingBoxOnText();
             Acad.Zoom();
         }
@@ -202,21 +203,39 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第21课，选择集
+        /// 第21课，选择集，全部图元
         /// </summary>
         public void P21()
         {
-            Acad.SelectionSetDemo();
+            Acad.SelectionSetAllEntity();
             Acad.Zoom();
         }
         /// <summary>
-        /// 第22课，选择多个圆（选择集）添加内接五角星
+        /// 第22课，选择集，用户选择
         /// </summary>
         public void P22()
         {
-            
+            Acad.SelectionSetByUser();
             Acad.Zoom();
         }
+        /// <summary>
+        /// 第23课，选择集,过滤(未解决这个问题)
+        /// </summary>
+        public void P23()
+        {
+            Acad.SelectionSetByFilterCircle();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第24-25课，
+        /// </summary>
+        public void P24()
+        {
+            
+        }
+
+
+
 
 
         #endregion 图元属性

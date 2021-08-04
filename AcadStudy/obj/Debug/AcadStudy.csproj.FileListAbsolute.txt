@@ -45,8 +45,8 @@ D:\AcadStudy\AcadStudy\bin\Debug\acmgd.dll
 D:\AcadStudy\AcadStudy\bin\Debug\Autodesk.AutoCAD.Interop.Common.dll
 D:\AcadStudy\AcadStudy\bin\Debug\Autodesk.AutoCAD.Interop.dll
 D:\AcadStudy\AcadStudy\bin\Debug\stdole.dll
-D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csprojAssemblyReference.cache
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.CoreCompileInputs.cache
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.CopyComplete
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.exe
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.pdb
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csprojAssemblyReference.cache

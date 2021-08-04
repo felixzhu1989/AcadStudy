@@ -23,8 +23,15 @@ namespace AcadStudy
             //chapter.P13();
             //chapter.P14toP15();
             //chapter.P16();
-            chapter.P17to18();
+            //chapter.P17to18();
             //chapter.P19();
+            //chapter.P20();
+            //chapter.P21();
+            //chapter.P22();
+            //chapter.P23();
+            chapter.P23();
+
+
 
 
             Console.WriteLine("Drawing completed, please close the window！\n------------------------------------------");
