@@ -965,6 +965,14 @@ namespace AcadStudy
             //dataValue[2] = "0";
             //dataValue[3] = "or>";
 
+            int[] gpCode = new int[1];
+            string[] dataValue = new string[1];
+            
+            gpCode[0] = 0; dataValue[0] = "CIRCLE";//类型
+            
+            //object vstalsit = new System.Runtime.InteropServices.VariantWrapper(dataValue);
+            //var vstalsit = dataValue;
+
             //object groupCode = gpCode;
             //object dataCode = gpCode;
             //selSet.SelectOnScreen(groupCode, dataCode);
