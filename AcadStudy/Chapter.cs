@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 
@@ -232,6 +233,7 @@ namespace AcadStudy
         /// </summary>
         public void P24()
         {
+            //Acad.ShowEntity();
             Acad.ChangeEntityInSelSet();
             Acad.Zoom();
         }
@@ -245,11 +247,42 @@ namespace AcadStudy
         }
 
         /// <summary>
-        /// 第26课，
+        /// 第29课，字典类型
         /// </summary>
-        public void P26()
+        public void P29()
+        {
+            //字典类型
+            Dictionary<string, string> dic =
+                new Dictionary<string, string>();
+            dic.Add("A","10");
+            dic.Add("B","20");
+            Console.WriteLine("Value added for key = \"B\": {0}",dic["B"]);
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第30课，字典类型应用，统计图元个数
+        /// </summary>
+        public void P30()
+        {
+            Acad.EntitiesStatistics();
+            Acad.Zoom();
+        }
+
+        /// <summary>
+        /// 第31课，小插件：材料统计器
+        /// </summary>
+        public void P31()
+        {
+            Acad.MaterialStatistics();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第32课，小插件：批量修改器
+        /// </summary>
+        public void P32to33()
         {
             
+            Acad.Zoom();
         }
 
 

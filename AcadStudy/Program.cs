@@ -1,15 +1,22 @@
-﻿using Autodesk.AutoCAD.Interop.Common;
-using System;
+﻿using System;
+using System.Windows.Forms;
 
 namespace AcadStudy
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// 应用程序的主入口点。
+        /// </summary>
+        /// [STAThread]
+        static void Main()
         {
-            Console.WriteLine("Connecting...");
+            
 
-            //new Program().AcadMethodTest();
+            Console.WriteLine("Connecting...");
+            
+
+            //AcadMethodTest();
 
             Chapter chapter = new Chapter();
             //chapter.P1to4();
@@ -29,20 +36,36 @@ namespace AcadStudy
             //chapter.P21();
             //chapter.P22();
             //chapter.P23();
-            chapter.P24();
+            //chapter.P24();
             //chapter.P25();
-
+            //第26-28课，文字替换
+            //RunWindow();//属性-应用程序-输出：Windows应用程序
+            //chapter.P29();
+            //chapter.P30();
+            //chapter.P31();
+            chapter.P32to33();
 
 
 
             Console.WriteLine("Drawing completed, please close the window！\n------------------------------------------");
-            Console.ReadKey();
+            Console.ReadKey();//属性-应用程序-输出：控制台应用程序
+        }
+
+
+        /// <summary>
+        /// 显示窗体
+        /// </summary>
+        public static void RunWindow()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FrmMain());
         }
 
         /// <summary>
         /// AcadMethod测试代码
         /// </summary>
-        private void AcadMethodTest()
+        private static void AcadMethodTest()
         {
             AcadMethod method = new AcadMethod();
             method.DrawLineLeft(0, 0, 0, 600, true);

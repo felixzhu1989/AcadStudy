@@ -1,8 +1,8 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 using System;
-using System.Security.Cryptography.X509Certificates;
-using Autodesk.AutoCAD.GraphicsInterface;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace AcadStudy
 {
@@ -1003,17 +1003,18 @@ namespace AcadStudy
                 {
                     acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
                     entity = (AcadEntity)objEntity;
-                    if (entity.EntityName == "AcDbTexture")//只要单行文本
+                    if (entity.EntityName == "AcDbText")//只要单行文本
                     {
-                        selSet.AddItems(objEntity);
+                        AcadEntity[] entities = { entity };
+                        selSet.AddItems(entities);//添加到选择集的对象数组(注意必须是数组)
                     }
                 }
                 catch (Exception)
                 {
                     string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
-                    if (check != "c" || check != "C") flag = false;
+                    if (check != "c" && check != "C") flag = false;
                 }
-            } while (true);
+            } while (flag);
             return selSet;
         }
         /// <summary>
@@ -1024,33 +1025,134 @@ namespace AcadStudy
             AcadSelectionSet selSet = SelectionSetBySelectText();
             for (int i = 0; i < selSet.Count; i++)
             {
-                AcadEntity entity = (AcadEntity) selSet.Item(i);
+                AcadEntity entity = (AcadEntity)selSet.Item(i);
                 entity.color = ACAD_COLOR.acRed;
             }
         }
-
+        /// <summary>
+        /// 选中文字并指定点对齐排列
+        /// </summary>
         public void SortText()
         {
             AcadSelectionSet selSet = SelectionSetBySelectText();
+            if (selSet.Count == 0) return;
+
             acadDoc.Utility.Prompt("请拾取对齐点：");
-            double[] targetPoint =(double[])acadDoc.Utility.GetPoint();
-            AcadText text= (AcadText)selSet.Item(0);
-            text.Height = 8;
-            text.InsertionPoint = targetPoint;
-            double[] insetPoint;
+            double[] targetPoint = (double[])acadDoc.Utility.GetPoint();
+            AcadText text = (AcadText)selSet.Item(0);
+            text.Height = 30;//统一字高
+            text.InsertionPoint = targetPoint;//文字的端点
             for (int i = 1; i < selSet.Count; i++)
             {
-                text = (AcadText) selSet.Item(i);
-                insetPoint= (double[])text.InsertionPoint;
+                text = (AcadText)selSet.Item(i);
+                double[] insetPoint = (double[])text.InsertionPoint;
                 insetPoint[0] = targetPoint[0];
-                insetPoint[1] = targetPoint[1]-10;
-                text.Height = 8;
+                insetPoint[1] = targetPoint[1] - 50;//两行间距50
+                targetPoint = insetPoint;//相对位置递增
+                text.Height = 30;
                 text.InsertionPoint = insetPoint;
             }
         }
+        /// <summary>
+        /// 替换文字
+        /// </summary>
+        /// <param name="findText">原文字</param>
+        /// <param name="replaceText">要替换的文字</param>
+        public void ReplaceText(string findText, string replaceText)
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            //选择全部图元
+            selSet.Select(AcSelect.acSelectionSetAll);
+            //过滤单行文本
+            if (selSet.Count == 0) return;
+            AcadEntity entity;
+            List<AcadEntity> entitiesList = new List<AcadEntity>();
+            foreach (var item in selSet)
+            {
+                entity = (AcadEntity)item;
+                if (entity.EntityName != "AcDbText")
+                {
+                    entitiesList.Add(entity);
+                }
+            }
+            AcadEntity[] entities = entitiesList.ToArray();
+            selSet.RemoveItems(entities);//排除不是文字的图元
+            if (selSet.Count == 0) return;
+            for (int i = 0; i < selSet.Count; i++)
+            {
+                AcadText text = (AcadText)selSet.Item(i);
+                string oldText = text.TextString;//获取文本
+                if (oldText.Contains(findText))
+                {
+                    string newText = oldText.Replace(findText, replaceText);//替换文字
+                    Debug.Print(newText);
+                    text.TextString = newText;
+                }
+            }
+        }
+        /// <summary>
+        /// 统计图元个数
+        /// </summary>
+        public void EntitiesStatistics()
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            //选择全部图元
+            selSet.Select(AcSelect.acSelectionSetAll);
+            if (selSet.Count == 0) return;
+            Dictionary<string, int> entDic =
+                new Dictionary<string, int>();
+            foreach (var item in selSet)
+            {
+                AcadEntity entity = (AcadEntity)item;
+                if (entDic.ContainsKey(entity.EntityName)) entDic[entity.EntityName] += 1;
+                else entDic.Add(entity.EntityName, 1);
 
-
-
+            }
+            foreach (var item in entDic)
+            {
+                Console.WriteLine("图元类型 " + item.Key + " : " + item.Value + " 个");
+            }
+        }
+        /// <summary>
+        /// 根据用户选择对象，统计材料小插件
+        /// </summary>
+        public void MaterialStatistics()
+        {
+            //手动对象到选择集
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            selSet.SelectOnScreen();
+            //过滤单行文本
+            if (selSet.Count == 0) return;
+            List<AcadEntity> entitiesList = new List<AcadEntity>();
+            foreach (var item in selSet)
+            {
+                AcadEntity entity = (AcadEntity)item;
+                if (entity.EntityName != "AcDbText")
+                {
+                    entitiesList.Add(entity);
+                }
+            }
+            AcadEntity[] entities = entitiesList.ToArray();
+            selSet.RemoveItems(entities);//排除不是文字的图元
+            //固定的几种材料
+            Dictionary<string, int> matDic =
+                new Dictionary<string, int>();
+            foreach (var item in selSet)
+            {
+                AcadText text = (AcadText)item;
+                if (matDic.ContainsKey(text.TextString)) matDic[text.TextString] += 1;
+                else matDic.Add(text.TextString, 1);
+            }
+            //输出显示
+            foreach (var item in matDic)
+            {
+                //判断这个文本是不是材料关键字SS或GI
+                if (item.Key.Contains("SS")|| item.Key.Contains("GI"))
+                {
+                    Console.WriteLine("材料 " + item.Key + " : " + item.Value + " PCS");
+                }
+            }
+        }
 
 
         #endregion 图元属性

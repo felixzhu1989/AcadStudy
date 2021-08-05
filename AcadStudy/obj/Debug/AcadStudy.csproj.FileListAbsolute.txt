@@ -50,3 +50,5 @@ D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.CopyComplete
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.exe
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.pdb
 D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csprojAssemblyReference.cache
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.FrmMain.resources
+D:\AcadStudy\AcadStudy\obj\Debug\AcadStudy.csproj.GenerateResource.cache
