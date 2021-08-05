@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 using System;
+using System.Security.Cryptography.X509Certificates;
 using Autodesk.AutoCAD.GraphicsInterface;
 
 namespace AcadStudy
@@ -41,20 +42,20 @@ namespace AcadStudy
         {
 
             Object objEntity;
-            Object pointPicked;
-            AcadEntity objAcadEntity;
+            Object pickedPoint;
+            AcadEntity entity;
             do
             {
                 try
                 {
-                    acadDoc.Utility.GetEntity(out objEntity, out pointPicked, "请选择图元：");
-                    objAcadEntity = (AcadEntity)objEntity;
-                    Console.WriteLine(objAcadEntity.EntityName);
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+                    entity = (AcadEntity)objEntity;
+                    Console.WriteLine(entity.EntityName);
                 }
                 catch (Exception)
                 {
-                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
-                    if (check == "c" || check == "C") return;
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") return;
                 }
             } while (true);
         }
@@ -697,8 +698,8 @@ namespace AcadStudy
                 }
                 finally
                 {
-                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
-                    if (check == "c" || check == "C") flag = false;
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
                 }
             } while (flag);
         }
@@ -733,8 +734,8 @@ namespace AcadStudy
                 }
                 finally
                 {
-                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
-                    if (check == "c" || check == "C") flag = false;
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
                 }
             } while (flag);
         }
@@ -771,8 +772,8 @@ namespace AcadStudy
                 }
                 finally
                 {
-                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
-                    if (check == "c" || check == "C") flag = false;
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
                 }
             } while (flag);
         }
@@ -827,8 +828,8 @@ namespace AcadStudy
                 }
                 finally
                 {
-                    string check = acadDoc.Utility.GetString(0, "输入C结束，任意键继续：");
-                    if (check == "c" || check == "C") flag = false;
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
                 }
             } while (flag);
         }
@@ -931,7 +932,7 @@ namespace AcadStudy
             //    selSet.Select(AcSelect.acSelectionSetCrossing, point1, point2, filterType, filterData);
             //}
 
-            //还不知道怎么在C#中实现筛选！！！以后有机会补上
+            //还不知道怎么在C#中实现筛选!!!以后有机会补上
             //API提示指定使用的过滤器类型的 DXF 组码。 
             //CAD中命令：(setq en_data(entget(car(entsel))))
             /*选择对象: ((-1 . <图元名: -267bb0>) (0 . "LINE") (330 . <图元名: -269308>) (5 . "1C2") 
@@ -967,9 +968,9 @@ namespace AcadStudy
 
             int[] gpCode = new int[1];
             string[] dataValue = new string[1];
-            
+
             gpCode[0] = 0; dataValue[0] = "CIRCLE";//类型
-            
+
             //object vstalsit = new System.Runtime.InteropServices.VariantWrapper(dataValue);
             //var vstalsit = dataValue;
 
@@ -985,6 +986,69 @@ namespace AcadStudy
                 entity.color = ACAD_COLOR.acMagenta;
             }
         }
+        /// <summary>
+        /// 手动添加图元到选择集中，过滤单行文本
+        /// </summary>
+        /// <returns></returns>
+        public AcadSelectionSet SelectionSetBySelectText()
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+                    entity = (AcadEntity)objEntity;
+                    if (entity.EntityName == "AcDbTexture")//只要单行文本
+                    {
+                        selSet.AddItems(objEntity);
+                    }
+                }
+                catch (Exception)
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
+                }
+            } while (true);
+            return selSet;
+        }
+        /// <summary>
+        /// 将选择集中的图元颜色改成红色
+        /// </summary>
+        public void ChangeEntityInSelSet()
+        {
+            AcadSelectionSet selSet = SelectionSetBySelectText();
+            for (int i = 0; i < selSet.Count; i++)
+            {
+                AcadEntity entity = (AcadEntity) selSet.Item(i);
+                entity.color = ACAD_COLOR.acRed;
+            }
+        }
+
+        public void SortText()
+        {
+            AcadSelectionSet selSet = SelectionSetBySelectText();
+            acadDoc.Utility.Prompt("请拾取对齐点：");
+            double[] targetPoint =(double[])acadDoc.Utility.GetPoint();
+            AcadText text= (AcadText)selSet.Item(0);
+            text.Height = 8;
+            text.InsertionPoint = targetPoint;
+            double[] insetPoint;
+            for (int i = 1; i < selSet.Count; i++)
+            {
+                text = (AcadText) selSet.Item(i);
+                insetPoint= (double[])text.InsertionPoint;
+                insetPoint[0] = targetPoint[0];
+                insetPoint[1] = targetPoint[1]-10;
+                text.Height = 8;
+                text.InsertionPoint = insetPoint;
+            }
+        }
+
 
 
 

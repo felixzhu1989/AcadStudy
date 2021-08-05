@@ -1,4 +1,5 @@
 ﻿using System;
+using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Interop.Common;
 
 namespace AcadStudy
@@ -227,15 +228,29 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第24-25课，
+        /// 第24课，手动选择图元添加倒选择集（过滤单行文本），并改成红色
         /// </summary>
         public void P24()
         {
-            
+            Acad.ChangeEntityInSelSet();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第25课，对齐单行文本
+        /// </summary>
+        public void P25()
+        {
+            Acad.SortText();
+            Acad.Zoom();
         }
 
-
-
+        /// <summary>
+        /// 第26课，
+        /// </summary>
+        public void P26()
+        {
+            
+        }
 
 
         #endregion 图元属性

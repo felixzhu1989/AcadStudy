@@ -29,7 +29,8 @@ namespace AcadStudy
             //chapter.P21();
             //chapter.P22();
             //chapter.P23();
-            chapter.P23();
+            chapter.P24();
+            //chapter.P25();
 
 
 
