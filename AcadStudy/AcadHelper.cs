@@ -783,11 +783,11 @@ namespace AcadStudy
         /// <param name="centerPoint"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public AcadLWPolyline AddStarInCircle(double[] centerPoint, double radius)
+        public AcadLWPolyline AddStarInCircle(double[] centerPoint, double radius, out double[] points)
         {
             double angleFromX = Math.PI / 2;//起点在Y轴上
             double angleDivision = 2 * Math.PI / 5;//五角星
-            double[] points = new double[10];
+            points = new double[10];
             for (int i = 0; i < 10; i = i + 2)
             {
                 points[i] = centerPoint[0] + Math.Cos(angleFromX) * radius;
@@ -802,12 +802,14 @@ namespace AcadStudy
         /// <summary>
         /// 通过选择一个现有圆绘制内接五角星
         /// </summary>
-        public void AddStarInCircleDemo()
+        public AcadLWPolyline AddStarInCircleDemo(out double[] points)
         {
             object objEntity;
             object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
+            AcadLWPolyline star = null;
+            points = new double[10];
             do
             {
                 try
@@ -818,8 +820,9 @@ namespace AcadStudy
                     if (entity.EntityName == "AcDbCircle")
                     {
                         AcadCircle circle = (AcadCircle)entity;
-                        AcadLWPolyline star = AddStarInCircle((double[])circle.Center, circle.Radius);
+                        star = AddStarInCircle((double[])circle.Center, circle.Radius, out points);
                         star.color = ACAD_COLOR.acGreen;
+                        return star;
                     }
                 }
                 catch (Exception)
@@ -832,6 +835,7 @@ namespace AcadStudy
                     if (check != "c" || check != "C") flag = false;
                 }
             } while (flag);
+            return star;
         }
         /// <summary>
         /// 创建选择集
@@ -1147,15 +1151,264 @@ namespace AcadStudy
             foreach (var item in matDic)
             {
                 //判断这个文本是不是材料关键字SS或GI
-                if (item.Key.Contains("SS")|| item.Key.Contains("GI"))
+                if (item.Key.Contains("SS") || item.Key.Contains("GI"))
                 {
                     Console.WriteLine("材料 " + item.Key + " : " + item.Value + " PCS");
                 }
             }
         }
-
-
         #endregion 图元属性
+
+        #region 图元修改
+        /// <summary>
+        /// 移动实体Demo
+        /// </summary>
+        public void MoveEntityDemo()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要移动的实体：");
+                    entity = (AcadEntity)objEntity;
+                    double[] startPoint = { 0, 0, 0 };
+                    double[] endPoint = { 100, 0, 0 };
+                    entity.Move(startPoint, endPoint);//移动实体
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
+                }
+            } while (flag);
+        }
+        /// <summary>
+        /// 旋转实体Demo
+        /// </summary>
+        public void RotateEntityDemo()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要旋转的实体：");
+                    entity = (AcadEntity)objEntity;
+                    double[] basePoint = { 0, 0, 0 };
+                    double rotateAngle = 45 * Math.PI / 180;//给定的是弧度
+                    entity.Rotate(basePoint, rotateAngle);//旋转实体
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
+                }
+            } while (flag);
+        }
+
+        /// <summary>
+        /// 删除实体Demo
+        /// </summary>
+        public void DeleteEntityDemo()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要删除的实体：");
+                    entity = (AcadEntity)objEntity;
+                    entity.Delete();//删除实体
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
+                }
+            } while (flag);
+        }
+        /// <summary>
+        /// 调用CAD命令，不足：只管发命令，不管执行结果
+        /// </summary>
+        /// <param name="strCommand"></param>
+        public void SendCommandToCAD(string strCommand)
+        {
+            acadDoc.SendCommand(strCommand);
+        }
+        /// <summary>
+        /// 调用CAD命令绘制直线，圆，文本
+        /// </summary>
+        public void SendCommandToCADDemo()
+        {
+            SendCommandToCAD("line\r0,0,0\r100,100,0\r\r");//\r代表回车
+            SendCommandToCAD("circle\r100,100,0\r50\r");
+        }
+        /// <summary>
+        /// 调用CAD命令绘制直线，用户选择起点和终点
+        /// </summary>
+        public void SendCommandToCADAddLineByUser()
+        {
+            acadDoc.Utility.Prompt("请选择起点：");
+            double[] startPoint = (double[])acadDoc.Utility.GetPoint();
+            double[] endPoint = (double[])acadDoc.Utility.GetPoint(startPoint, "请选择终点：");
+            string strCommand = "line\r" + ChangePointFormat(startPoint) + "\r" + ChangePointFormat(endPoint) + "\r\r";
+            SendCommandToCAD(strCommand);
+        }
+        /// <summary>
+        /// 将点变换成字符串格式（坐标）
+        /// </summary>
+        /// <param name="point">点</param>
+        /// <returns></returns>
+        public string ChangePointFormat(double[] point)
+        {
+            return point[0] + "," + point[1] + "," + point[2];
+        }
+        /* 命令: (setq en(entsel))
+         * 选择对象: (<图元名: -2677c8> (312.735 1054.97 0.0))
+         * (list (handent "276") (list 100 100 0))
+         */
+        /// <summary>
+        /// 将实体换换成字符串格式（lisp图元 对象）
+        /// </summary>
+        /// <param name="entity">对象</param>
+        /// <returns></returns>
+        public string ChangeEntityFormat(AcadEntity entity)
+        {
+            return "(handent \"" + entity.Handle + "\")";
+        }
+        /// <summary>
+        /// 将实体换换成字符串格式（lisp图元 对象，带坐标）
+        /// </summary>
+        /// <param name="entity">对象</param>
+        /// <returns></returns>
+        public string ChangeEntityAndPointFormat(AcadEntity entity, double[] point)
+        {
+            return "(list (handent \"" + entity.Handle + "\") (list " + point[0] + " " + point[1] + " " + point[2] + "))";
+        }
+        /// <summary>
+        /// 调用CAD命令，打断命令
+        /// </summary>
+        public void SendCommandToCADBreak()
+        {
+            object objEntity;
+            object pickedPoint;
+            AcadEntity entity;
+            Boolean flag = true;
+            do
+            {
+                try
+                {
+                    //让用户选取对象
+                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要打断的实体：");
+                    entity = (AcadEntity)objEntity;
+                    double[] startPoint = (double[])pickedPoint;
+                    double[] endPoint = (double[])acadDoc.Utility.GetPoint(startPoint, "请选择打断第二点：");
+                    string strCommand = "break\r";
+                    strCommand += ChangeEntityAndPointFormat(entity, startPoint) + "\r";
+                    strCommand += ChangePointFormat(endPoint) + "\r";
+                    SendCommandToCAD(strCommand);
+                }
+                catch (Exception)
+                {
+                    acadDoc.Utility.Prompt("未选中实体，");
+                }
+                finally
+                {
+                    string check = acadDoc.Utility.GetString(0, "输入C继续，任意键结束：");
+                    if (check != "c" || check != "C") flag = false;
+                }
+            } while (flag);
+        }
+        /// <summary>
+        /// 调用CAD命令，修剪命令，修剪五角星
+        /// </summary>
+        public void TrimStar()
+        {
+            double[] centerPoint = { 0, 0, 0 };
+            double[] points = new double[10];
+            double angleFromX = Math.PI / 2;//起点在Y轴上
+            double angleDivision = 2 * Math.PI / 5;//五角星
+            for (int i = 0; i < 10; i = i + 2)
+            {
+                points[i] = centerPoint[0] + Math.Cos(angleFromX) * 50;
+                points[i + 1] = centerPoint[1] + Math.Sin(angleFromX) * 50;
+                angleFromX = angleFromX + angleDivision * 2;//跨两个等分角（因为是绘制五角星）
+            }
+            //绘制轻量多段线
+            AcadLWPolyline star = modelSpace.AddLightWeightPolyline(points);
+            star.Closed = true; //闭合
+            AcadEntity entity = (AcadEntity)star;
+            string strCommand = "trim\r";//修剪命令
+            strCommand += ChangeEntityFormat(entity) + "\r\r";
+            for (int i = 0; i < points.Length; i = i + 2)
+            {
+                strCommand += MidPointFormat(points[i], points[i + 1], points[(i + 2) % 10], points[(i + 3) % 10]) + "\r";
+            }
+            strCommand += "\r";
+            SendCommandToCAD(strCommand);
+        }
+        /// <summary>
+        /// 将点变换成字符串格式，两点的中点（坐标）
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <returns></returns>
+        public string MidPointFormat(double x1, double y1, double x2, double y2)
+        {
+            return (x1 + x2) / 2 + "," + (y1 + y2) / 2 + ",0";
+        }
+
+        /// <summary>
+        /// 调用CAD命令，延伸命令
+        /// </summary>
+        public void SendCommandToCADExtend()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            entity = (AcadEntity)objEntity;
+            string strCommand = "extend\r\r";
+            //strCommand += ChangeEntityFormat(entity) + ChangePointFormat((double[])pickedPoint) + "\r";
+            strCommand += ChangePointFormat((double[])pickedPoint) + "\r";
+            SendCommandToCAD(strCommand);
+        }
+
+
+
+
+
+
+
+
+        #endregion 图元修改
 
 
 

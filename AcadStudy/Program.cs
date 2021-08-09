@@ -43,8 +43,12 @@ namespace AcadStudy
             //chapter.P29();
             //chapter.P30();
             //chapter.P31();
-            chapter.P32to33();
-
+            //chapter.P32to40();
+            //chapter.P41();
+            //chapter.P42();
+            //chapter.P43();
+            //chapter.P44_1();
+            chapter.P44_2();
 
 
             Console.WriteLine("Drawing completed, please close the window！\n------------------------------------------");

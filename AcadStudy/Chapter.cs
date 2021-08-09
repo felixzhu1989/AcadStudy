@@ -201,7 +201,8 @@ namespace AcadStudy
         /// </summary>
         public void P20()
         {
-            Acad.AddStarInCircleDemo();
+            double[] points=new double[10];
+            Acad.AddStarInCircleDemo(out points);
             Acad.Zoom();
         }
         /// <summary>
@@ -277,16 +278,79 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第32课，小插件：批量修改器
+        /// 第32-40课，小插件：批量修改器
         /// </summary>
-        public void P32to33()
+        public void P32to40()
         {
-            
+            /*思路：
+             * 提取文字，判断格式，加入选择集
+             * 归类，计算修改后的参数
+             * 循环，执行文字替换
+             * 
+             */
+            Acad.Zoom();
+        }
+
+        #endregion 图元属性
+
+        #region 图元修改
+        /// <summary>
+        /// 第41课，移动，旋转，删除实体
+        /// </summary>
+        public void P41()
+        {
+            Acad.MoveEntityDemo();
+            Acad.RotateEntityDemo();
+            Acad.DeleteEntityDemo();
+            Acad.Zoom();
+        }
+
+        /// <summary>
+        /// 第42课，调用CAD命令
+        /// </summary>
+        public void P42()
+        {
+            //Acad.SendCommandToCADDemo();
+            Acad.SendCommandToCADAddLineByUser();
+            Acad.Zoom();
+        }
+
+        /// <summary>
+        /// 第43课，调用CAD命令，传递图元，打断命令
+        /// </summary>
+        public void P43()
+        {
+            Acad.SendCommandToCADBreak();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第44课，调用CAD命令，修剪实例
+        /// </summary>
+        public void P44_1()
+        {
+            Acad.TrimStar();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第44课，调用CAD命令，延伸
+        /// </summary>
+        public void P44_2()
+        {
+            Acad.SendCommandToCADExtend();
             Acad.Zoom();
         }
 
 
-        #endregion 图元属性
+
+
+
+
+        #endregion 图元修改
+
+
+
+
+
 
     }
 }
