@@ -1674,11 +1674,68 @@ namespace AcadStudy
             return lwPolyline;
         }
 
-
-
-
-
-
         #endregion 图元修改
+
+        #region 图层设置
+        /// <summary>
+        /// 添加图层
+        /// </summary>
+        /// <param name="str">名称</param>
+        /// <returns></returns>
+        public AcadLayer AddLayer(string str)
+        {
+           return acadDoc.Layers.Add(str);
+        }
+        /// <summary>
+        /// 删除图层
+        /// </summary>
+        /// <param name="str"></param>
+        public void DeleteLayer(string str)
+        {
+            acadDoc.Layers.Item(str).Delete();
+        }
+        /// <summary>
+        /// 图层更名
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
+        public void RenameLayer(string oldName, string newName)
+        {
+            acadDoc.Layers.Item(oldName).Name = newName;
+        }
+        /// <summary>
+        /// 图层设置示例
+        /// </summary>
+        public void LayerSettingDemo()
+        {
+            for (int i = 0; i < acadDoc.Layers.Count; i++)
+            {
+                if (acadDoc.Layers.Item(i).Name == "中心线")
+                {
+                    AcadLayer layer = acadDoc.Layers.Item(i);
+                    layer.LayerOn = true;
+                    layer.Freeze = false;
+                    layer.Lock = false;
+                    layer.color = AcColor.acRed;//颜色
+                    layer.Lineweight = ACAD_LWEIGHT.acLnWt050;//线型
+
+                    Boolean flag=true;
+                    for (int j = 0; j < acadDoc.Linetypes.Count; j++)
+                    {
+                        if (acadDoc.Linetypes.Item(j).Name == "CENTER") flag = false;
+                    }
+                    if (flag) acadDoc.Linetypes.Load("CENTER", "acad.lin");//先加载线型再设置线型
+
+                    layer.Linetype = "CENTER";//设置线型
+                    acadDoc.ActiveLayer = layer;//设置为当前图层
+                }
+            }
+        }
+
+
+
+        #endregion 图层设置
+
+
     }
 }

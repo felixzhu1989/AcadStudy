@@ -400,10 +400,33 @@ namespace AcadStudy
             Acad.Zoom();
             Acad.ShowEntity();
         }
-
-
         #endregion 图元修改
 
+
+        #region 图层设置
+        /// <summary>
+        /// 第51课，创建和删除图层
+        /// </summary>
+        public void P51()
+        {
+           AcadLayer centerLayer= Acad.AddLayer("中心线");
+            //Acad.DeleteLayer("中心线");
+            //centerLayer.Delete();
+            Acad.RenameLayer("中心线","文字");
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第52课，图层属性设置
+        /// </summary>
+        public void P52()
+        {
+            Acad.AddLayer("中心线");
+            Acad.LayerSettingDemo();
+            Acad.Zoom();
+        }
+
+
+        #endregion 图层设置
 
 
 
