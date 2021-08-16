@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Autodesk.AutoCAD.Interop.Common;
+using System;
 using System.Collections.Generic;
-using Autodesk.AutoCAD.Interop;
-using Autodesk.AutoCAD.Interop.Common;
 
 namespace AcadStudy
 {
@@ -12,7 +11,7 @@ namespace AcadStudy
         private AcadHelper Acad = new AcadHelper();
 
         #region 创建图元
-        
+
         /// <summary>
         /// 第1-4课,创建直线
         /// </summary>
@@ -114,7 +113,7 @@ namespace AcadStudy
             Acad.AddArcByStartAndAngle(centerPoint, startPoint, 90);
             Acad.AddArcByStartAndChordLength(centerPoint, startPoint, 70);
             Acad.AddArcByStartAndArcLength(centerPoint, startPoint, 200);
-            Acad.AddArcBy3Point(startPoint, endPoint,centerPoint);//注意三点的顺序为逆时针方向
+            Acad.AddArcBy3Point(startPoint, endPoint, centerPoint);//注意三点的顺序为逆时针方向
             Acad.Zoom();
         }
         /// <summary>
@@ -137,7 +136,7 @@ namespace AcadStudy
             double[] point1 = { 0, 0, 0 };
             double[] point2 = { 20, 0, 0 };
             double[] point3 = { 10, 0, 0 };
-            double[] point4 = {30, 0, 0};
+            double[] point4 = { 30, 0, 0 };
             Acad.AddEllipseDemo();
             Acad.AddEllipseByAxisAndRatio(point3, point2, 0.7);
             Acad.AddEllipseBy3Point(point1, point4, point3);
@@ -160,7 +159,7 @@ namespace AcadStudy
             double[] insertPoint = { 10, 10, 0 };
             string textString = "AutoCAD C# 二次开发";
             double height = 10;
-            AcadText text= Acad.AddText(textString, insertPoint, height);
+            AcadText text = Acad.AddText(textString, insertPoint, height);
             text.Rotation = 30 * Math.PI / 180;//旋转
             text.Height = 5;
             text.Backward = true;//水平翻转
@@ -201,7 +200,7 @@ namespace AcadStudy
         /// </summary>
         public void P20()
         {
-            double[] points=new double[10];
+            double[] points = new double[10];
             Acad.AddStarInCircleDemo(out points);
             Acad.Zoom();
         }
@@ -255,9 +254,9 @@ namespace AcadStudy
             //字典类型
             Dictionary<string, string> dic =
                 new Dictionary<string, string>();
-            dic.Add("A","10");
-            dic.Add("B","20");
-            Console.WriteLine("Value added for key = \"B\": {0}",dic["B"]);
+            dic.Add("A", "10");
+            dic.Add("B", "20");
+            Console.WriteLine("Value added for key = \"B\": {0}", dic["B"]);
             Acad.Zoom();
         }
         /// <summary>
@@ -340,9 +339,67 @@ namespace AcadStudy
             Acad.Zoom();
         }
 
+        /// <summary>
+        /// 第45课，复制实体，镜像实体，缩放实体
+        /// </summary>
+        public void P45()
+        {
+            //Acad.CopyEntityDemo();
+            //Acad.MirrorEntityDemo();
+            Acad.ScaleEntityDemo();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第46课，阵列
+        /// </summary>
+        public void P46()
+        {
+            //Acad.ArrayRectangularDemo();
+            Acad.ArrayPolarDemo();
+            Acad.Zoom();
+        }
 
+        /// <summary>
+        /// 第47课，多段线操作,连接多段线,创建封闭区域
+        /// </summary>
+        public void P47()
+        {
+            //Acad.JoinLWPolyline();
+            Acad.CreateBoundary();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第48课，用凸度的方式绘制多段线圆弧
+        /// </summary>
+        public void P48()
+        {
+            //Acad.GetBulgeInLWPolylineDemo();
+            Acad.AddPolylineByBulgeDemo();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第49课，将直线和圆转换成多段线
+        /// </summary>
+        public void P49()
+        {
+            AcadLine line = Acad.AddLineDemo();
+            Acad.LineToLWPolyline(line);
+            AcadCircle circle = Acad.AddCircleDemo();
+            Acad.CircleToLWPolyline(circle);
+            Acad.Zoom();
+            Acad.ShowEntity();
+        }
+        /// <summary>
+        /// 第50课，将圆弧转换成多段线
+        /// </summary>
+        public void P50()
+        {
+            AcadArc arc = Acad.AddArcDemo();
+            Acad.ArcToLWPolyline(arc);
 
-
+            Acad.Zoom();
+            Acad.ShowEntity();
+        }
 
 
         #endregion 图元修改

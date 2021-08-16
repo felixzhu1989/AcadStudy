@@ -477,6 +477,7 @@ namespace AcadStudy
             rectangle.Closed = true; //闭合
             return rectangle;
         }
+
         /// <summary>
         /// 通过中心点，起点和边数绘制内接多边形
         /// </summary>
@@ -486,8 +487,9 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadLWPolyline AddPolygonInside(double[] centerPoint, double[] vertexPoint, int sideNum)
         {
-            double radius = Math.Sqrt(Math.Pow(vertexPoint[0] - centerPoint[0], 2) + Math.Pow(vertexPoint[1] - centerPoint[1], 2));//外接圆半径
-            double angleFromX = acadDoc.Utility.AngleFromXAxis(centerPoint, vertexPoint);//顶点角度
+            double radius = Math.Sqrt(Math.Pow(vertexPoint[0] - centerPoint[0], 2) +
+                                      Math.Pow(vertexPoint[1] - centerPoint[1], 2)); //外接圆半径
+            double angleFromX = acadDoc.Utility.AngleFromXAxis(centerPoint, vertexPoint); //顶点角度
             //多边形等分角度
             double angleDivision = 2 * Math.PI / sideNum;
             double[] points = new double[2 * sideNum];
@@ -502,6 +504,7 @@ namespace AcadStudy
             polygon.Closed = true; //闭合
             return polygon;
         }
+
         /// <summary>
         /// 通过中心点，相切点和边数绘制外切多边形
         /// </summary>
@@ -511,13 +514,14 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadLWPolyline AddPolygonOutside(double[] centerPoint, double[] tangentPoint, int sideNum)
         {
-            double radius = Math.Sqrt(Math.Pow(tangentPoint[0] - centerPoint[0], 2) + Math.Pow(tangentPoint[1] - centerPoint[1], 2));//内切圆半径
-            double angleFromX = acadDoc.Utility.AngleFromXAxis(centerPoint, tangentPoint);//切点角度
+            double radius = Math.Sqrt(Math.Pow(tangentPoint[0] - centerPoint[0], 2) +
+                                      Math.Pow(tangentPoint[1] - centerPoint[1], 2)); //内切圆半径
+            double angleFromX = acadDoc.Utility.AngleFromXAxis(centerPoint, tangentPoint); //切点角度
             //多边形等分角度
             double angleDivision = 2 * Math.PI / sideNum;
             //计算顶点角度和外接圆半径
-            angleFromX = angleFromX + angleDivision / 2;//顶点角度
-            radius = radius / Math.Cos(angleDivision / 2);//外接圆半径
+            angleFromX = angleFromX + angleDivision / 2; //顶点角度
+            radius = radius / Math.Cos(angleDivision / 2); //外接圆半径
             double[] points = new double[2 * sideNum];
             for (int i = 0; i < 2 * sideNum; i = i + 2)
             {
@@ -530,6 +534,7 @@ namespace AcadStudy
             polygon.Closed = true; //闭合
             return polygon;
         }
+
         /// <summary>
         /// 绘制椭圆Demo
         /// </summary>
@@ -537,12 +542,13 @@ namespace AcadStudy
         public AcadEllipse AddEllipseDemo()
         {
             double[] centerPoint = { 10, 10, 0 };
-            double[] majorAxis = { 20, 0, 0 };//相对于中心点的坐标
-            double radiusRatio = 0.5;//短轴与长轴的比值,必须小于或等于1
+            double[] majorAxis = { 20, 0, 0 }; //相对于中心点的坐标
+            double radiusRatio = 0.5; //短轴与长轴的比值,必须小于或等于1
             if (radiusRatio > 1) radiusRatio = 1;
             AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
             return ellipse;
         }
+
         /// <summary>
         /// 通过中心点，长轴顶点和短轴长轴比绘制椭圆
         /// </summary>
@@ -552,12 +558,13 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadEllipse AddEllipseByAxisAndRatio(double[] centerPoint, double[] majorAxis, double radiusRatio)
         {
-            majorAxis[0] = majorAxis[0] - centerPoint[0];//相对于中心点的坐标
+            majorAxis[0] = majorAxis[0] - centerPoint[0]; //相对于中心点的坐标
             majorAxis[1] = majorAxis[1] - centerPoint[1];
             if (radiusRatio > 1) radiusRatio = 1;
             AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
             return ellipse;
         }
+
         /// <summary>
         /// 通过中心点，长轴顶点和短轴顶点绘制椭圆
         /// </summary>
@@ -573,11 +580,12 @@ namespace AcadStudy
             vertexPoint[1] = vertexPoint[1] - centerPoint[1];
             double radiusLong = Math.Sqrt(Math.Pow(majorAxis[0], 2) + Math.Pow(majorAxis[1], 2));
             double radiusShort = Math.Sqrt(Math.Pow(vertexPoint[0], 2) + Math.Pow(vertexPoint[1], 2));
-            double radiusRatio = radiusShort / radiusLong;//短轴与长轴的比值
-            if (radiusRatio > 1) radiusRatio = radiusLong / radiusShort;//反过来
+            double radiusRatio = radiusShort / radiusLong; //短轴与长轴的比值
+            if (radiusRatio > 1) radiusRatio = radiusLong / radiusShort; //反过来
             AcadEllipse ellipse = modelSpace.AddEllipse(centerPoint, majorAxis, radiusRatio);
             return ellipse;
         }
+
         /// <summary>
         /// 绘制填充Demo
         /// </summary>
@@ -595,13 +603,14 @@ namespace AcadStudy
             hatch.AppendInnerLoop(entArray);
             //边界对象数组，边界必须包含以下类型的对象： Line, Polyline, Circle, Ellipse, Spline, Region 
             hatch.PatternScale = 0.25;
-            hatch.PatternAngle = 90 * Math.PI / 180;//以弧度计算的
+            hatch.PatternAngle = 90 * Math.PI / 180; //以弧度计算的
             hatch.color = ACAD_COLOR.acGreen;
             //当为图案填充定义定了边界后，使用 Evaluate 方法计算填充线并填充该边界，然后使用 Regen 方法更新该图案填充的显示。
             hatch.Evaluate();
             acadDoc.Regen(AcRegenType.acActiveViewport);
             return hatch;
         }
+
         /// <summary>
         /// 通过对象数组和填充样式名称绘制填充
         /// </summary>
@@ -611,11 +620,12 @@ namespace AcadStudy
         public AcadHatch AddHatchByName(AcadEntity[] entArray, string patternName)
         {
             AcadHatch hatch = modelSpace.AddHatch(0, patternName, true);
-            hatch.AppendInnerLoop(entArray);//对象数组
+            hatch.AppendInnerLoop(entArray); //对象数组
             hatch.Evaluate();
             acadDoc.Regen(AcRegenType.acActiveViewport);
             return hatch;
         }
+
         /// <summary>
         /// 绘制渐变填充Demo
         /// </summary>
@@ -632,14 +642,15 @@ namespace AcadStudy
             AcadAcCmColor acColor2 = (AcadAcCmColor)acadDoc.Application.GetInterfaceObject("AutoCAD.AcCmColor.17");
             acColor1.ColorIndex = (AcColor)1;
             acColor2.ColorIndex = (AcColor)2;
-            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true, 1);//最后一个为渐变选项
+            AcadHatch hatch = modelSpace.AddHatch(0, patternName, true, 1); //最后一个为渐变选项
             hatch.GradientColor1 = acColor1;
             hatch.GradientColor2 = acColor2;
-            hatch.AppendInnerLoop(entArray);//对象数组
+            hatch.AppendInnerLoop(entArray); //对象数组
             hatch.Evaluate();
             acadDoc.Regen(AcRegenType.acActiveViewport);
             return hatch;
         }
+
         /// <summary>
         /// 通过插入点和字高绘制单行文字
         /// </summary>
@@ -652,6 +663,7 @@ namespace AcadStudy
             AcadText text = modelSpace.AddText(textString, insertPoint, height);
             return text;
         }
+
         /// <summary>
         /// 通过插入点和宽度绘制多行文字
         /// </summary>
@@ -669,6 +681,7 @@ namespace AcadStudy
         #endregion 绘制图元
 
         #region 图元属性
+
         /// <summary>
         /// 修改圆属性
         /// </summary>
@@ -703,6 +716,7 @@ namespace AcadStudy
                 }
             } while (flag);
         }
+
         /// <summary>
         /// 修改文字
         /// </summary>
@@ -739,6 +753,7 @@ namespace AcadStudy
                 }
             } while (flag);
         }
+
         /// <summary>
         /// 给现有文字添加边框
         /// </summary>
@@ -777,6 +792,7 @@ namespace AcadStudy
                 }
             } while (flag);
         }
+
         /// <summary>
         /// 通过圆心和半径绘制内接五角星
         /// </summary>
@@ -785,20 +801,21 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadLWPolyline AddStarInCircle(double[] centerPoint, double radius, out double[] points)
         {
-            double angleFromX = Math.PI / 2;//起点在Y轴上
-            double angleDivision = 2 * Math.PI / 5;//五角星
+            double angleFromX = Math.PI / 2; //起点在Y轴上
+            double angleDivision = 2 * Math.PI / 5; //五角星
             points = new double[10];
             for (int i = 0; i < 10; i = i + 2)
             {
                 points[i] = centerPoint[0] + Math.Cos(angleFromX) * radius;
                 points[i + 1] = centerPoint[1] + Math.Sin(angleFromX) * radius;
-                angleFromX = angleFromX + angleDivision * 2;//跨两个等分角（因为是绘制五角星）
+                angleFromX = angleFromX + angleDivision * 2; //跨两个等分角（因为是绘制五角星）
             }
             //绘制轻量多段线
             AcadLWPolyline star = modelSpace.AddLightWeightPolyline(points);
             star.Closed = true; //闭合
             return star;
         }
+
         /// <summary>
         /// 通过选择一个现有圆绘制内接五角星
         /// </summary>
@@ -837,6 +854,7 @@ namespace AcadStudy
             } while (flag);
             return star;
         }
+
         /// <summary>
         /// 创建选择集
         /// </summary>
@@ -873,13 +891,14 @@ namespace AcadStudy
             //selectionSet = acadDoc.SelectionSets.Add(selSetName);
             return selectionSet;
         }
+
         /// <summary>
         /// 选择全部图元作为选择集更改颜色
         /// </summary>
         public void SelectionSetAllEntity()
         {
             AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
-            selSet.Select(AcSelect.acSelectionSetAll);//添加全部图元，后添加的图元先加入selectionSet,堆栈的方式取图元
+            selSet.Select(AcSelect.acSelectionSetAll); //添加全部图元，后添加的图元先加入selectionSet,堆栈的方式取图元
             AcadEntity entity;
             //遍历方法1：注意图元的出栈方式
             foreach (var item in selSet)
@@ -894,6 +913,7 @@ namespace AcadStudy
             //    entity.color = ACAD_COLOR.acMagenta;
             //}
         }
+
         /// <summary>
         /// 通过用户选择作为选择集更改颜色
         /// </summary>
@@ -912,7 +932,7 @@ namespace AcadStudy
             //    selSet.Select(AcSelect.acSelectionSetCrossing, point1, point2);
             //}
 
-            selSet.SelectOnScreen();//按照用户选择的先后顺序添加图元
+            selSet.SelectOnScreen(); //按照用户选择的先后顺序添加图元
             AcadEntity entity;
             foreach (var item in selSet)
             {
@@ -973,7 +993,8 @@ namespace AcadStudy
             int[] gpCode = new int[1];
             string[] dataValue = new string[1];
 
-            gpCode[0] = 0; dataValue[0] = "CIRCLE";//类型
+            gpCode[0] = 0;
+            dataValue[0] = "CIRCLE"; //类型
 
             //object vstalsit = new System.Runtime.InteropServices.VariantWrapper(dataValue);
             //var vstalsit = dataValue;
@@ -990,6 +1011,7 @@ namespace AcadStudy
                 entity.color = ACAD_COLOR.acMagenta;
             }
         }
+
         /// <summary>
         /// 手动添加图元到选择集中，过滤单行文本
         /// </summary>
@@ -1007,10 +1029,10 @@ namespace AcadStudy
                 {
                     acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
                     entity = (AcadEntity)objEntity;
-                    if (entity.EntityName == "AcDbText")//只要单行文本
+                    if (entity.EntityName == "AcDbText") //只要单行文本
                     {
                         AcadEntity[] entities = { entity };
-                        selSet.AddItems(entities);//添加到选择集的对象数组(注意必须是数组)
+                        selSet.AddItems(entities); //添加到选择集的对象数组(注意必须是数组)
                     }
                 }
                 catch (Exception)
@@ -1021,6 +1043,7 @@ namespace AcadStudy
             } while (flag);
             return selSet;
         }
+
         /// <summary>
         /// 将选择集中的图元颜色改成红色
         /// </summary>
@@ -1033,6 +1056,7 @@ namespace AcadStudy
                 entity.color = ACAD_COLOR.acRed;
             }
         }
+
         /// <summary>
         /// 选中文字并指定点对齐排列
         /// </summary>
@@ -1044,19 +1068,20 @@ namespace AcadStudy
             acadDoc.Utility.Prompt("请拾取对齐点：");
             double[] targetPoint = (double[])acadDoc.Utility.GetPoint();
             AcadText text = (AcadText)selSet.Item(0);
-            text.Height = 30;//统一字高
-            text.InsertionPoint = targetPoint;//文字的端点
+            text.Height = 30; //统一字高
+            text.InsertionPoint = targetPoint; //文字的端点
             for (int i = 1; i < selSet.Count; i++)
             {
                 text = (AcadText)selSet.Item(i);
                 double[] insetPoint = (double[])text.InsertionPoint;
                 insetPoint[0] = targetPoint[0];
-                insetPoint[1] = targetPoint[1] - 50;//两行间距50
-                targetPoint = insetPoint;//相对位置递增
+                insetPoint[1] = targetPoint[1] - 50; //两行间距50
+                targetPoint = insetPoint; //相对位置递增
                 text.Height = 30;
                 text.InsertionPoint = insetPoint;
             }
         }
+
         /// <summary>
         /// 替换文字
         /// </summary>
@@ -1080,20 +1105,21 @@ namespace AcadStudy
                 }
             }
             AcadEntity[] entities = entitiesList.ToArray();
-            selSet.RemoveItems(entities);//排除不是文字的图元
+            selSet.RemoveItems(entities); //排除不是文字的图元
             if (selSet.Count == 0) return;
             for (int i = 0; i < selSet.Count; i++)
             {
                 AcadText text = (AcadText)selSet.Item(i);
-                string oldText = text.TextString;//获取文本
+                string oldText = text.TextString; //获取文本
                 if (oldText.Contains(findText))
                 {
-                    string newText = oldText.Replace(findText, replaceText);//替换文字
+                    string newText = oldText.Replace(findText, replaceText); //替换文字
                     Debug.Print(newText);
                     text.TextString = newText;
                 }
             }
         }
+
         /// <summary>
         /// 统计图元个数
         /// </summary>
@@ -1117,6 +1143,7 @@ namespace AcadStudy
                 Console.WriteLine("图元类型 " + item.Key + " : " + item.Value + " 个");
             }
         }
+
         /// <summary>
         /// 根据用户选择对象，统计材料小插件
         /// </summary>
@@ -1137,7 +1164,7 @@ namespace AcadStudy
                 }
             }
             AcadEntity[] entities = entitiesList.ToArray();
-            selSet.RemoveItems(entities);//排除不是文字的图元
+            selSet.RemoveItems(entities); //排除不是文字的图元
             //固定的几种材料
             Dictionary<string, int> matDic =
                 new Dictionary<string, int>();
@@ -1157,9 +1184,11 @@ namespace AcadStudy
                 }
             }
         }
+
         #endregion 图元属性
 
         #region 图元修改
+
         /// <summary>
         /// 移动实体Demo
         /// </summary>
@@ -1178,7 +1207,7 @@ namespace AcadStudy
                     entity = (AcadEntity)objEntity;
                     double[] startPoint = { 0, 0, 0 };
                     double[] endPoint = { 100, 0, 0 };
-                    entity.Move(startPoint, endPoint);//移动实体
+                    entity.Move(startPoint, endPoint); //移动实体
                 }
                 catch (Exception)
                 {
@@ -1191,6 +1220,7 @@ namespace AcadStudy
                 }
             } while (flag);
         }
+
         /// <summary>
         /// 旋转实体Demo
         /// </summary>
@@ -1208,8 +1238,8 @@ namespace AcadStudy
                     acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要旋转的实体：");
                     entity = (AcadEntity)objEntity;
                     double[] basePoint = { 0, 0, 0 };
-                    double rotateAngle = 45 * Math.PI / 180;//给定的是弧度
-                    entity.Rotate(basePoint, rotateAngle);//旋转实体
+                    double rotateAngle = 45 * Math.PI / 180; //给定的是弧度
+                    entity.Rotate(basePoint, rotateAngle); //旋转实体
                 }
                 catch (Exception)
                 {
@@ -1239,7 +1269,7 @@ namespace AcadStudy
                     //让用户选取对象
                     acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要删除的实体：");
                     entity = (AcadEntity)objEntity;
-                    entity.Delete();//删除实体
+                    entity.Delete(); //删除实体
                 }
                 catch (Exception)
                 {
@@ -1252,6 +1282,7 @@ namespace AcadStudy
                 }
             } while (flag);
         }
+
         /// <summary>
         /// 调用CAD命令，不足：只管发命令，不管执行结果
         /// </summary>
@@ -1260,14 +1291,16 @@ namespace AcadStudy
         {
             acadDoc.SendCommand(strCommand);
         }
+
         /// <summary>
         /// 调用CAD命令绘制直线，圆，文本
         /// </summary>
         public void SendCommandToCADDemo()
         {
-            SendCommandToCAD("line\r0,0,0\r100,100,0\r\r");//\r代表回车
+            SendCommandToCAD("line\r0,0,0\r100,100,0\r\r"); //\r代表回车
             SendCommandToCAD("circle\r100,100,0\r50\r");
         }
+
         /// <summary>
         /// 调用CAD命令绘制直线，用户选择起点和终点
         /// </summary>
@@ -1279,8 +1312,9 @@ namespace AcadStudy
             string strCommand = "line\r" + ChangePointFormat(startPoint) + "\r" + ChangePointFormat(endPoint) + "\r\r";
             SendCommandToCAD(strCommand);
         }
+
         /// <summary>
-        /// 将点变换成字符串格式（坐标）
+        /// 将点变换成字符串格式（lisp点，坐标）
         /// </summary>
         /// <param name="point">点</param>
         /// <returns></returns>
@@ -1288,6 +1322,7 @@ namespace AcadStudy
         {
             return point[0] + "," + point[1] + "," + point[2];
         }
+
         /* 命令: (setq en(entsel))
          * 选择对象: (<图元名: -2677c8> (312.735 1054.97 0.0))
          * (list (handent "276") (list 100 100 0))
@@ -1301,6 +1336,7 @@ namespace AcadStudy
         {
             return "(handent \"" + entity.Handle + "\")";
         }
+
         /// <summary>
         /// 将实体换换成字符串格式（lisp图元 对象，带坐标）
         /// </summary>
@@ -1308,8 +1344,10 @@ namespace AcadStudy
         /// <returns></returns>
         public string ChangeEntityAndPointFormat(AcadEntity entity, double[] point)
         {
-            return "(list (handent \"" + entity.Handle + "\") (list " + point[0] + " " + point[1] + " " + point[2] + "))";
+            return "(list (handent \"" + entity.Handle + "\") (list " + point[0] + " " + point[1] + " " + point[2] +
+                   "))";
         }
+
         /// <summary>
         /// 调用CAD命令，打断命令
         /// </summary>
@@ -1344,6 +1382,7 @@ namespace AcadStudy
                 }
             } while (flag);
         }
+
         /// <summary>
         /// 调用CAD命令，修剪命令，修剪五角星
         /// </summary>
@@ -1351,27 +1390,29 @@ namespace AcadStudy
         {
             double[] centerPoint = { 0, 0, 0 };
             double[] points = new double[10];
-            double angleFromX = Math.PI / 2;//起点在Y轴上
-            double angleDivision = 2 * Math.PI / 5;//五角星
+            double angleFromX = Math.PI / 2; //起点在Y轴上
+            double angleDivision = 2 * Math.PI / 5; //五角星
             for (int i = 0; i < 10; i = i + 2)
             {
                 points[i] = centerPoint[0] + Math.Cos(angleFromX) * 50;
                 points[i + 1] = centerPoint[1] + Math.Sin(angleFromX) * 50;
-                angleFromX = angleFromX + angleDivision * 2;//跨两个等分角（因为是绘制五角星）
+                angleFromX = angleFromX + angleDivision * 2; //跨两个等分角（因为是绘制五角星）
             }
             //绘制轻量多段线
             AcadLWPolyline star = modelSpace.AddLightWeightPolyline(points);
             star.Closed = true; //闭合
             AcadEntity entity = (AcadEntity)star;
-            string strCommand = "trim\r";//修剪命令
+            string strCommand = "trim\r"; //修剪命令
             strCommand += ChangeEntityFormat(entity) + "\r\r";
             for (int i = 0; i < points.Length; i = i + 2)
             {
-                strCommand += MidPointFormat(points[i], points[i + 1], points[(i + 2) % 10], points[(i + 3) % 10]) + "\r";
+                strCommand += MidPointFormat(points[i], points[i + 1], points[(i + 2) % 10], points[(i + 3) % 10]) +
+                              "\r";
             }
             strCommand += "\r";
             SendCommandToCAD(strCommand);
         }
+
         /// <summary>
         /// 将点变换成字符串格式，两点的中点（坐标）
         /// </summary>
@@ -1401,7 +1442,237 @@ namespace AcadStudy
             SendCommandToCAD(strCommand);
         }
 
+        /// <summary>
+        /// 复制实体
+        /// </summary>
+        public void CopyEntityDemo()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            entity = (AcadEntity)objEntity;
+            AcadEntity copyEntity = (AcadEntity)entity.Copy();
+            acadDoc.Utility.Prompt("请选择复制起点：");
+            double[] startPoint = (double[])acadDoc.Utility.GetPoint();
+            double[] endPoint = (double[])acadDoc.Utility.GetPoint(startPoint, "请选择复制终点：");
+            copyEntity.Move(startPoint, endPoint);
+            copyEntity.color = ACAD_COLOR.acRed;
+        }
 
+        /// <summary>
+        /// 镜像实体
+        /// </summary>
+        public void MirrorEntityDemo()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            entity = (AcadEntity)objEntity;
+            acadDoc.Utility.Prompt("请选择镜像中心线起点：");
+            double[] startPoint = (double[])acadDoc.Utility.GetPoint();
+            double[] endPoint = (double[])acadDoc.Utility.GetPoint(startPoint, "请选择镜像中心线终点：");
+            AcadEntity mirrorEntity = (AcadEntity)entity.Mirror(startPoint, endPoint);
+            mirrorEntity.color = ACAD_COLOR.acGreen;
+        }
+
+        /// <summary>
+        /// 缩放实体
+        /// </summary>
+        public void ScaleEntityDemo()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            entity = (AcadEntity)objEntity;
+            acadDoc.Utility.Prompt("请选择基点：");
+            double[] basePoint = (double[])acadDoc.Utility.GetPoint();
+            string scale = acadDoc.Utility.GetString(0, "请输入放大倍数");
+            entity.ScaleEntity(basePoint, Convert.ToDouble(scale));
+        }
+
+        /// <summary>
+        /// 矩形阵列
+        /// </summary>
+        public void ArrayRectangularDemo()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            entity = (AcadEntity)objEntity;
+            int rows = 5;
+            int columns = 10;
+            double disRows = 200;
+            double disColumns = 200;
+            entity.ArrayRectangular(rows, columns, 1, disRows, disColumns, 1);
+        }
+
+        /// <summary>
+        /// 环形阵列
+        /// </summary>
+        public void ArrayPolarDemo()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            entity = (AcadEntity)objEntity;
+            acadDoc.Utility.Prompt("请选择圆形阵列中心点点：");
+            double[] centerPoint = (double[])acadDoc.Utility.GetPoint();
+            int num = 10;
+            double angle = 2 * Math.PI; //弧度
+            entity.ArrayPolar(num, angle, centerPoint);
+        }
+
+        /// <summary>
+        /// 连接合并多段线
+        /// </summary>
+        public void JoinLWPolyline()
+        {
+            AcadSelectionSet selSet = CreateSelectionSet("MySelSet");
+            selSet.SelectOnScreen();
+            string strCommand = "pedit\r";
+            strCommand += "m\r" + ChangeSelSetFormat(selSet) + "\rj\r\r\r";
+            SendCommandToCAD(strCommand);
+        }
+
+        /// <summary>
+        /// 将选择集转换成字符串格式（lisp选择集分散成单个图元对象）
+        /// </summary>
+        /// <param name="selSet">选择集</param>
+        /// <returns></returns>
+        public string ChangeSelSetFormat(AcadSelectionSet selSet)
+        {
+            if (selSet.Count == 0) return null;
+            string strSelSet = "";
+            for (int i = 0; i < selSet.Count; i++)
+            {
+                strSelSet += "(handent \"" + selSet.Item(i).Handle + "\")\r";
+            }
+            return strSelSet;
+        }
+
+        /// <summary>
+        /// 通过拾取封闭区域中的点，创建封闭区域
+        /// </summary>
+        /// <returns></returns>
+        public AcadEntity CreateBoundary()
+        {
+            acadDoc.Utility.Prompt("请选拾取区域内部点：");
+            double[] innerPoint = (double[])acadDoc.Utility.GetPoint();
+            string strCommand = "-boundary\r";
+            strCommand += innerPoint[0] + "," + innerPoint[1] + "\r\r"; //这个命令只需要二维点坐标
+            SendCommandToCAD(strCommand);
+            int entCount = modelSpace.Count; //统计图元个数
+            AcadEntity entity = modelSpace.Item(entCount - 1); //获取最新创建的对象
+            entity.color = ACAD_COLOR.acMagenta;
+            return entity;
+        }
+
+        /* Bulge凸度：指多段线的一个顶点和下一个顶点形成的圆弧的角度的1/4的正切值
+         */
+        public void GetBulgeInLWPolylineDemo()
+        {
+            Object objEntity;
+            Object pickedPoint;
+            AcadEntity entity;
+
+            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择多段线：");
+            entity = (AcadEntity)objEntity;
+            int pointNum = GetPolylinePointNum(entity);
+            double[] bulge = new double[pointNum];
+            for (int i = 0; i < pointNum; i++)
+            {
+                if (entity.EntityName == "AcDbPolyline")
+                    bulge[i] = ((AcadLWPolyline)entity).GetBulge(i);
+                //if (entity.EntityName == "AcDbPolyline")
+                //    bulge[i] = ((AcadPolyline)entity).GetBulge(i);
+                Console.WriteLine(bulge[i]);
+            }
+        }
+        /// <summary>
+        /// 获取多段线的顶点数
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public int GetPolylinePointNum(AcadEntity entity)
+        {
+            int pointNum = 0;
+            double[] points;
+            if (entity.EntityName == "AcDbPolyline")
+            {
+                points = (double[])((AcadLWPolyline)entity).Coordinates;
+                pointNum = points.Length / 2;
+            }
+            //if (entity.EntityName == "AcDbPolyline")
+            //{
+            //    points = (double[])((AcadPolyline)entity).Coordinates;
+            //    pointNum = points.Length / 3;
+            //}
+            return pointNum;
+        }
+        /// <summary>
+        /// 通过控制凸度绘制圆弧多段线
+        /// </summary>
+        /// <returns></returns>
+        public AcadLWPolyline AddPolylineByBulgeDemo()
+        {
+            double[] points = { 0, 0, 1000, 0, 2000, 0, };
+            AcadLWPolyline lwPolyline = modelSpace.AddLightWeightPolyline(points);
+            lwPolyline.SetBulge(0, -0.5);//逆时针设置凸度
+            lwPolyline.SetBulge(1, 0.5);//设置成1为一个半圆
+            return lwPolyline;
+        }
+        /// <summary>
+        /// 将直线转化成多段线,获取直线属性然后创建多段线，最后删除直线
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public AcadLWPolyline LineToLWPolyline(AcadLine line)
+        {
+            double[] startPoint = (double[])line.StartPoint;
+            double[] endPoint = (double[])line.EndPoint;
+            double[] points = { startPoint[0], startPoint[1], endPoint[0], endPoint[0] };
+            AcadLWPolyline lwPolyline = modelSpace.AddLightWeightPolyline(points);
+            line.Delete();
+            return lwPolyline;
+        }
+        /// <summary>
+        /// 将圆转化为多段线，获取圆的属性，然后创建多段线，最后删除圆
+        /// </summary>
+        /// <param name="circle"></param>
+        /// <returns></returns>
+        public AcadLWPolyline CircleToLWPolyline(AcadCircle circle)
+        {
+            double[] centerPoint = (double[])circle.Center;
+            double[] points =
+                {centerPoint[0] - circle.Radius, centerPoint[1], centerPoint[0] + circle.Radius, centerPoint[1]};
+            AcadLWPolyline lwPolyline = modelSpace.AddLightWeightPolyline(points);
+            lwPolyline.Closed = true;//设置闭合
+            lwPolyline.SetBulge(0, 1);
+            lwPolyline.SetBulge(1, 1);
+            circle.Delete();
+            return lwPolyline;
+        }
+        /// <summary>
+        /// 将圆弧转化为多段线，获取圆弧的属性，然后创建多段线，最后删除圆弧
+        /// </summary>
+        /// <param name="arc"></param>
+        /// <returns></returns>
+        public AcadLWPolyline ArcToLWPolyline(AcadArc arc)
+        {
+            double[] centerPoint = (double[])arc.Center;
+
+            double[] points =
+                {centerPoint[0] + arc.Radius*Math.Cos(arc.StartAngle), centerPoint[1]+ arc.Radius*Math.Sin(arc.StartAngle), centerPoint[0] + + arc.Radius*Math.Cos(arc.EndAngle), centerPoint[1]+ arc.Radius*Math.Sin(arc.EndAngle)};
+            AcadLWPolyline lwPolyline = modelSpace.AddLightWeightPolyline(points);
+            lwPolyline.SetBulge(0, Math.Tan(arc.TotalAngle / 4));//圆弧的角度的1/4的正切值
+            arc.Delete();
+            return lwPolyline;
+        }
 
 
 
@@ -1409,9 +1680,5 @@ namespace AcadStudy
 
 
         #endregion 图元修改
-
-
-
-
     }
 }
