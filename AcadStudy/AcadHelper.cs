@@ -962,6 +962,7 @@ namespace AcadStudy
             /*选择对象: ((-1 . <图元名: -267bb0>) (0 . "LINE") (330 . <图元名: -269308>) (5 . "1C2") 
             (100. "AcDbEntity") (67. 0) (410. "Model") (8. "0") (62. 3) (100.
             "AcDbLine") (10 180.031 92.372 0.0) (11 676.345 - 182.36 0.0) (210 0.0 0.0 1.0))
+
             选择对象: ((-1 . <图元名: -267bc0>) (0 . "CIRCLE") (330 . <图元名: -269308>) (5 . "1C0") 
             (100 . "AcDbEntity") (67 . 0) (410 . "Model") (8 . "0") (62 . 3) (100 . 
             "AcDbCircle") (10 416.371 721.597 0.0) (40 . 75.6643) (210 0.0 0.0 1.0))
@@ -996,14 +997,10 @@ namespace AcadStudy
             gpCode[0] = 0;
             dataValue[0] = "CIRCLE"; //类型
 
-            //object vstalsit = new System.Runtime.InteropServices.VariantWrapper(dataValue);
-            //var vstalsit = dataValue;
+            //selSet.SelectOnScreen(gpCode, dataValue);
+            selSet.Select(AcSelect.acSelectionSetAll, gpCode, dataValue);
 
-            //object groupCode = gpCode;
-            //object dataCode = gpCode;
-            //selSet.SelectOnScreen(groupCode, dataCode);
-
-            selSet.SelectOnScreen();
+            //selSet.SelectOnScreen();
             AcadEntity entity;
             foreach (var item in selSet)
             {
@@ -1684,7 +1681,7 @@ namespace AcadStudy
         /// <returns></returns>
         public AcadLayer AddLayer(string str)
         {
-           return acadDoc.Layers.Add(str);
+            return acadDoc.Layers.Add(str);
         }
         /// <summary>
         /// 删除图层
@@ -1719,7 +1716,7 @@ namespace AcadStudy
                     layer.color = AcColor.acRed;//颜色
                     layer.Lineweight = ACAD_LWEIGHT.acLnWt050;//线型
 
-                    Boolean flag=true;
+                    Boolean flag = true;
                     for (int j = 0; j < acadDoc.Linetypes.Count; j++)
                     {
                         if (acadDoc.Linetypes.Item(j).Name == "CENTER") flag = false;
@@ -1731,6 +1728,45 @@ namespace AcadStudy
                 }
             }
         }
+        /// <summary>
+        /// 批量删除空白图层
+        /// </summary>
+        public void DeleteBlankLayer()
+        {
+            //不能删除当前图层，将其他图层设置激活图层再删除。
+            //不能删除有内容的图层，遍历删除图层中的图元，然后删除图层。
+            acadDoc.ActiveLayer = acadDoc.Layers.Item(0);//设置0层为当前图层
+            int layerNum = acadDoc.Layers.Count;
+            //现将所有图层对象装入数组中，防止直接从layers集合中删除导致循环失败
+            AcadLayer[] layerArray = new AcadLayer[layerNum - 1];
+            for (int i = 0; i < layerNum - 1; i++)
+            {
+                layerArray[i] = acadDoc.Layers.Item(i + 1);
+            }
+            AcadSelectionSet selSet = CreateSelectionSet("MySelSet");
+            selSet.Select(AcSelect.acSelectionSetAll);
+            //int[] filterType = new int[1];
+            //string[] FilterData = new string[1];
+            //filterType[0] = 8;
+            for (int i = 0; i < layerArray.Length; i++)
+            {
+                //方法一：曲线救国
+                int entityNum = 0;
+                for (int j = 0; j < selSet.Count; j++)
+                {
+                    AcadEntity entity = selSet.Item(j);
+                    if (entity.Layer == layerArray[i].Name) entityNum++;//计算图层中图元的个数
+                }
+                if (entityNum == 0) layerArray[i].Delete();//图元个数为0则删除图层
+
+                //方法二，使用选择集过滤（再C#中COM报错，暂未实现过滤）
+                //selSet.Select(AcSelect.acSelectionSetAll,null,null, filterType, FilterData);//DXF过滤设置为图层
+                //if (selSet.Count==0) layerArray[i].Delete();
+                //selSet.Clear();//每次循环后清除选择集
+            }
+        }
+
+
 
 
 

@@ -424,6 +424,18 @@ namespace AcadStudy
             Acad.LayerSettingDemo();
             Acad.Zoom();
         }
+        /// <summary>
+        /// 第53课，删除空白图层
+        /// </summary>
+        public void P53()
+        {
+            Acad.DeleteBlankLayer();
+            Acad.Zoom();
+        }
+
+
+
+
 
 
         #endregion 图层设置
