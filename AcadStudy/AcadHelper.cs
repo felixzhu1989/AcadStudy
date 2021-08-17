@@ -10,6 +10,9 @@ namespace AcadStudy
     下载地址：https://yunpan.360.cn/surl_yRE3CKKEqLk （提取码：c16e）
     BiliBili视频：https://www.bilibili.com/video/BV1Hb411T7sA
     代码由VBA的逻辑转化而来
+
+
+    查看图元，CAD中lisp命令：(setq en_data(entget(car(entsel))))
     */
 
 
@@ -50,7 +53,11 @@ namespace AcadStudy
                 {
                     acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
                     entity = (AcadEntity)objEntity;
-                    Console.WriteLine(entity.EntityName);
+                    Console.WriteLine("EntityName:" + entity.EntityName);
+                    Console.WriteLine("EntityType:" + entity.EntityType);
+                    Console.WriteLine("Handle:" + entity.Handle);
+                    Console.WriteLine("ObjectID:" + entity.ObjectID);
+                    Console.WriteLine("ObjectName:" + entity.ObjectName);
                 }
                 catch (Exception)
                 {
@@ -1765,12 +1772,136 @@ namespace AcadStudy
                 //selSet.Clear();//每次循环后清除选择集
             }
         }
-
-
-
-
-
         #endregion 图层设置
+
+        #region 图块操作
+
+        /// <summary>
+        /// 创建块
+        /// </summary>
+        public void CreateBlockDemo()
+        {
+            DeleteBlock("块实例");
+            double[] basePoint = { 0, 0, 0 };//插入块的基点
+            AcadBlock objBlock = acadDoc.Blocks.Add(basePoint, "块实例");
+            double[] point1 = { -20, 0, 0 };
+            double[] point2 = { 20, 0, 0 };
+            double[] point3 = { 0, -20, 0 };
+            double[] point4 = { 0, 20, 0 };
+
+            objBlock.AddLine(point1, point2);
+            objBlock.AddLine(point3, point4);
+            objBlock.AddCircle(basePoint, 20);
+            objBlock.Item(2).Lineweight = ACAD_LWEIGHT.acLnWt030;
+        }
+        /// <summary>
+        /// 选择图元并创建块
+        /// </summary>
+        public void CreateBlockBySelect()
+        {
+            DeleteBlock("选择后创建块");
+            acadDoc.Utility.Prompt("请拾取基点：");
+            double[] basePoint = (double[])acadDoc.Utility.GetPoint();
+            AcadBlock objBlock = acadDoc.Blocks.Add(basePoint, "选择后创建块");
+            //选择要加入块的图元
+            AcadSelectionSet selSet = CreateSelectionSet("MySelSet");
+            selSet.SelectOnScreen(); //按照用户选择的先后顺序添加图元
+            AcadEntity[] entitys = new AcadEntity[selSet.Count];
+            for (int i = 0; i < selSet.Count; i++)
+            {
+                entitys[i] = selSet.Item(i);
+            }
+            acadDoc.CopyObjects(entitys, objBlock);//通过复制实体的方式插入块
+            selSet.Clear();
+        }
+        /// <summary>
+        /// 通过块名和插入点插入块
+        /// </summary>
+        /// <param name="blockName"></param>
+        /// <param name="insertPoint"></param>
+        public AcadBlockReference InsertBlock(string blockName, double[] insertPoint)
+        {
+            return modelSpace.InsertBlock(insertPoint, blockName, 1, 1, 1, 0);
+        }
+        /// <summary>
+        /// 删除块
+        /// </summary>
+        public void DeleteBlock(string blockName)
+        {
+            //不能删除已经被插入的图块（对象被参照），必须先删除模型控件中的参照
+            //判断是否存在该块
+            Boolean flag = false;
+            for (int i = 0; i < acadDoc.Blocks.Count; i++)
+            {
+                AcadBlock item = acadDoc.Blocks.Item(i);
+                if (item.Name == blockName) flag = true;
+            }
+            if (flag)
+            {
+                //判断模型空间中是否存在块对参照，如果有则删除它
+                //AcDbBlockReference
+
+                AcadBlock objBlock = acadDoc.Blocks.Item(blockName);
+                objBlock.Delete();
+            }
+        }
+
+        /// <summary>
+        /// 创建带属性的块
+        /// </summary>
+        public void CreateAttBlockDemo()
+        {
+            //如果不删除，会在原有的块上重复绘制
+            DeleteBlock("带属性的块");
+            double[] basePoint = { 0, 0, 0 };//插入块的基点
+            AcadBlock objBlock = acadDoc.Blocks.Add(basePoint, "带属性的块");
+            double[] point1 = { -20, 0, 0 };
+            double[] point2 = { 20, 0, 0 };
+            double[] point3 = { 0, -20, 0 };
+            double[] point4 = { 0, 20, 0 };
+
+            objBlock.AddLine(point1, point2);
+            objBlock.AddLine(point3, point4);
+            objBlock.AddCircle(basePoint, 20);
+            objBlock.Item(2).Lineweight = ACAD_LWEIGHT.acLnWt030;
+            //设置块的属性
+            double[] basePoint1 = { 25, 2, 0 };
+            objBlock.AddAttribute(16, AcAttributeMode.acAttributeModeLockPosition, "ANT1-1F", basePoint1, "编号", "ANT1-1F");
+            double[] basePoint2 = { 25, -18, 0 };
+            objBlock.AddAttribute(16, AcAttributeMode.acAttributeModeLockPosition, "10.0dBm", basePoint2, "功率", "10.0dBm");
+
+        }
+        /// <summary>
+        /// 批量修改带属性的块
+        /// </summary>
+        public void ChangeBlockAtt()
+        {
+            //先选择需要修改的块
+            AcadSelectionSet selSet = CreateSelectionSet("MySelSet");
+            selSet.SelectOnScreen();
+            if (selSet.Count == 0) return;
+
+            acadDoc.Utility.Prompt("请拾取对齐点：");
+            double[] targetPoint = (double[])acadDoc.Utility.GetPoint();
+            for (int i = 0; i < selSet.Count; i++)
+            {
+                AcadBlockReference block = (AcadBlockReference)selSet.Item(i);
+                //排序与文字排序一样
+                double[] insetPoint = (double[])block.InsertionPoint;
+                insetPoint[0] = targetPoint[0];
+                insetPoint[1] = targetPoint[1] - 60; //两行间距60
+                targetPoint = insetPoint; //相对位置递增
+                block.InsertionPoint = targetPoint;
+                //修改属性C#无法实现
+            }
+        }
+
+
+
+
+        #endregion 图块操作
+
+
 
 
     }

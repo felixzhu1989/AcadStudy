@@ -409,10 +409,10 @@ namespace AcadStudy
         /// </summary>
         public void P51()
         {
-           AcadLayer centerLayer= Acad.AddLayer("中心线");
+            AcadLayer centerLayer = Acad.AddLayer("中心线");
             //Acad.DeleteLayer("中心线");
             //centerLayer.Delete();
-            Acad.RenameLayer("中心线","文字");
+            Acad.RenameLayer("中心线", "文字");
             Acad.Zoom();
         }
         /// <summary>
@@ -425,21 +425,71 @@ namespace AcadStudy
             Acad.Zoom();
         }
         /// <summary>
-        /// 第53课，删除空白图层
+        /// 第53课，批量删除空白图层
         /// </summary>
         public void P53()
         {
             Acad.DeleteBlankLayer();
             Acad.Zoom();
         }
-
-
-
-
-
-
         #endregion 图层设置
 
+        #region 图块操作
+        /// <summary>
+        /// 第54课，创建块
+        /// </summary>
+        public void P54()
+        {
+            Acad.CreateBlockDemo();
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第55课，选择图元并创建块,插入块
+        /// </summary>
+        public void P55()
+        {
+            Acad.CreateBlockBySelect();
+            //double[] insertPoint = { 0, 0, 0 };
+            //Acad.InsertBlock("块实例", insertPoint);
+            Acad.Zoom();
+        }
+
+        /// <summary>
+        /// 第56课，删除块
+        /// </summary>
+        public void P56()
+        {
+            Acad.DeleteBlock("选择后创建块");
+            Acad.Zoom();
+        }
+
+        /// <summary>
+        /// 第57课，创建带属性的块，并插入
+        /// </summary>
+        public void P57()
+        {
+            Acad.CreateAttBlockDemo();
+            //double[] insertPoint = { 0, 0, 0 };
+            //AcadBlockReference block = Acad.InsertBlock("带属性的块", insertPoint);
+            //设置属性在VBA中可行，但是移植到C#中后不可用
+            //object[] blockAtt=(object[]) block.GetAttributes();
+            // blockAtt[0] = "ANT2-2F";
+            // blockAtt[1] = "12.2dBm";
+            Acad.Zoom();
+        }
+        /// <summary>
+        /// 第58课，批量修改块属性
+        /// </summary>
+        public void P58()
+        {
+            //Acad.ShowEntity();
+            Acad.ChangeBlockAtt();
+            Acad.Zoom();
+        }
+
+
+
+        #endregion 图块操作
 
 
 
