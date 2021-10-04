@@ -253,9 +253,11 @@ namespace AcadStudy
         {
             //字典类型
             Dictionary<string, string> dic =
-                new Dictionary<string, string>();
-            dic.Add("A", "10");
-            dic.Add("B", "20");
+                new Dictionary<string, string>
+                {
+                    { "A", "10" },
+                    { "B", "20" }
+                };
             Console.WriteLine("Value added for key = \"B\": {0}", dic["B"]);
             Acad.Zoom();
         }
@@ -487,11 +489,16 @@ namespace AcadStudy
             Acad.Zoom();
         }
 
-
-
         #endregion 图块操作
 
-
+        /// <summary>
+        /// 第59课，事件，图元绘制时归类到指定层中
+        /// </summary>
+        public void P59()
+        {
+            Acad.Command();
+            Acad.Zoom();
+        }
 
 
     }

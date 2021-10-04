@@ -3,6 +3,9 @@ using Autodesk.AutoCAD.Interop.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.Net.Configuration;
+using System.Windows.Forms;
 
 namespace AcadStudy
 {
@@ -43,15 +46,12 @@ namespace AcadStudy
         /// </summary>
         public void ShowEntity()
         {
-
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
             do
             {
                 try
                 {
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
                     entity = (AcadEntity)objEntity;
                     Console.WriteLine("EntityName:" + entity.EntityName);
                     Console.WriteLine("EntityType:" + entity.EntityType);
@@ -694,8 +694,6 @@ namespace AcadStudy
         /// </summary>
         public void ChangeCircleDemo()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -704,7 +702,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要修改的圆：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要修改的圆：");
                     entity = (AcadEntity)objEntity;
                     if (string.Compare(entity.EntityName, "AcDbCircle") == 0)
                     {
@@ -729,8 +727,6 @@ namespace AcadStudy
         /// </summary>
         public void ChangeTextDemo()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -738,7 +734,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要修改的文字：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要修改的文字：");
                     entity = (AcadEntity)objEntity;
                     //单行文本AcDbText；多行文本为AcDbMText
                     if (entity.EntityName == "AcDbText")
@@ -766,8 +762,6 @@ namespace AcadStudy
         /// </summary>
         public void AddBoundingBoxOnText()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -775,15 +769,13 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要添加边框的文字：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要添加边框的文字：");
                     entity = (AcadEntity)objEntity;
                     //单行文本AcDbText；多行文本为AcDbMText
                     if (entity.EntityName == "AcDbText")
                     {
                         AcadText text = (AcadText)entity;
-                        object objMinPoint;
-                        object objMaxPoint;
-                        text.GetBoundingBox(out objMinPoint, out objMaxPoint);
+                        text.GetBoundingBox(out object objMinPoint, out object objMaxPoint);
                         AddRectangleBy2Point((double[])objMinPoint, (double[])objMaxPoint);
                         acadDoc.Utility.Prompt("边框添加完成完成。");
                     }
@@ -828,8 +820,6 @@ namespace AcadStudy
         /// </summary>
         public AcadLWPolyline AddStarInCircleDemo(out double[] points)
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             AcadLWPolyline star = null;
@@ -839,7 +829,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要绘制五角星的圆：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要绘制五角星的圆：");
                     entity = (AcadEntity)objEntity;
                     if (entity.EntityName == "AcDbCircle")
                     {
@@ -1023,15 +1013,13 @@ namespace AcadStudy
         public AcadSelectionSet SelectionSetBySelectText()
         {
             AcadSelectionSet selSet = CreateSelectionSet("mySelectionSet");
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
             {
                 try
                 {
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
                     entity = (AcadEntity)objEntity;
                     if (entity.EntityName == "AcDbText") //只要单行文本
                     {
@@ -1198,8 +1186,6 @@ namespace AcadStudy
         /// </summary>
         public void MoveEntityDemo()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -1207,7 +1193,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要移动的实体：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要移动的实体：");
                     entity = (AcadEntity)objEntity;
                     double[] startPoint = { 0, 0, 0 };
                     double[] endPoint = { 100, 0, 0 };
@@ -1230,8 +1216,6 @@ namespace AcadStudy
         /// </summary>
         public void RotateEntityDemo()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -1239,7 +1223,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要旋转的实体：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要旋转的实体：");
                     entity = (AcadEntity)objEntity;
                     double[] basePoint = { 0, 0, 0 };
                     double rotateAngle = 45 * Math.PI / 180; //给定的是弧度
@@ -1262,8 +1246,6 @@ namespace AcadStudy
         /// </summary>
         public void DeleteEntityDemo()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -1271,7 +1253,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要删除的实体：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要删除的实体：");
                     entity = (AcadEntity)objEntity;
                     entity.Delete(); //删除实体
                 }
@@ -1357,8 +1339,6 @@ namespace AcadStudy
         /// </summary>
         public void SendCommandToCADBreak()
         {
-            object objEntity;
-            object pickedPoint;
             AcadEntity entity;
             Boolean flag = true;
             do
@@ -1366,7 +1346,7 @@ namespace AcadStudy
                 try
                 {
                     //让用户选取对象
-                    acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择要打断的实体：");
+                    acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择要打断的实体：");
                     entity = (AcadEntity)objEntity;
                     double[] startPoint = (double[])pickedPoint;
                     double[] endPoint = (double[])acadDoc.Utility.GetPoint(startPoint, "请选择打断第二点：");
@@ -1435,10 +1415,8 @@ namespace AcadStudy
         /// </summary>
         public void SendCommandToCADExtend()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
             entity = (AcadEntity)objEntity;
             string strCommand = "extend\r\r";
             //strCommand += ChangeEntityFormat(entity) + ChangePointFormat((double[])pickedPoint) + "\r";
@@ -1451,10 +1429,8 @@ namespace AcadStudy
         /// </summary>
         public void CopyEntityDemo()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
             entity = (AcadEntity)objEntity;
             AcadEntity copyEntity = (AcadEntity)entity.Copy();
             acadDoc.Utility.Prompt("请选择复制起点：");
@@ -1469,10 +1445,8 @@ namespace AcadStudy
         /// </summary>
         public void MirrorEntityDemo()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
             entity = (AcadEntity)objEntity;
             acadDoc.Utility.Prompt("请选择镜像中心线起点：");
             double[] startPoint = (double[])acadDoc.Utility.GetPoint();
@@ -1486,10 +1460,8 @@ namespace AcadStudy
         /// </summary>
         public void ScaleEntityDemo()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
             entity = (AcadEntity)objEntity;
             acadDoc.Utility.Prompt("请选择基点：");
             double[] basePoint = (double[])acadDoc.Utility.GetPoint();
@@ -1502,10 +1474,8 @@ namespace AcadStudy
         /// </summary>
         public void ArrayRectangularDemo()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
             entity = (AcadEntity)objEntity;
             int rows = 5;
             int columns = 10;
@@ -1519,10 +1489,8 @@ namespace AcadStudy
         /// </summary>
         public void ArrayPolarDemo()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择图元：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择图元：");
             entity = (AcadEntity)objEntity;
             acadDoc.Utility.Prompt("请选择圆形阵列中心点点：");
             double[] centerPoint = (double[])acadDoc.Utility.GetPoint();
@@ -1580,11 +1548,9 @@ namespace AcadStudy
          */
         public void GetBulgeInLWPolylineDemo()
         {
-            Object objEntity;
-            Object pickedPoint;
             AcadEntity entity;
 
-            acadDoc.Utility.GetEntity(out objEntity, out pickedPoint, "请选择多段线：");
+            acadDoc.Utility.GetEntity(out object objEntity, out object pickedPoint, "请选择多段线：");
             entity = (AcadEntity)objEntity;
             int pointNum = GetPolylinePointNum(entity);
             double[] bulge = new double[pointNum];
@@ -1895,14 +1861,73 @@ namespace AcadStudy
                 //修改属性C#无法实现
             }
         }
-
-
-
-
         #endregion 图块操作
 
 
+        //绑定事件，绘制图元自动分层，暂时没有成功
+        public void Command()
+        {
+            acadDoc.BeginCommand+=BeginCommand;
+        }
+        public void BeginCommand(string commandName)
+        {
+            //if (commandName == "move")
+            //{
+            //    SendKeys.Send("{ESC}");
+            //}
+             
+            if (commandName == "line")
+            {
+                //如果输入的命令是line，则创建直线图层，然后激活图层
+                NewLayer("直线");
+                acadDoc.ActiveLayer = acadDoc.Layers.Item("直线");
+            }
+            else if (commandName == "circle")
+            {
+                NewLayer("圆");
+                acadDoc.ActiveLayer = acadDoc.Layers.Item("圆");
+            }
+            else if (commandName == "pline")
+            {
+                NewLayer("多线");
+                acadDoc.ActiveLayer = acadDoc.Layers.Item("多线");
+            }
+            else if (commandName == "arc")
+            {
+                NewLayer("圆弧");
+                acadDoc.ActiveLayer = acadDoc.Layers.Item("圆弧");
+            }
+            else if (commandName == "text")
+            {
+                NewLayer("文字");
+                acadDoc.ActiveLayer = acadDoc.Layers.Item("文字");
+            }
+        }
+        //新建图层
+        public void NewLayer(string layerName)
+        {
+            if (IsExistLayer(layerName))
+            {
+                acadDoc.Layers.Add(layerName);
+            }
+        }
+        //判断图层是否存在
+        private bool IsExistLayer(string layerName)
+        {
+            for (int i = 1; i < acadDoc.Layers.Count; i++)
+            {
+                if (acadDoc.Layers.Item(i).Name==layerName) return true;
+            }
+            return false;
+        }
 
 
+
+
+
+
+
+
+         
     }
 }
